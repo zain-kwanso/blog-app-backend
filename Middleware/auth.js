@@ -1,9 +1,12 @@
-require("dotenv").config();
-const jwt = require("jsonwebtoken");
-const statusCodes = require("../constants/statusCodes");
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import statusCodes from "../constants/statusCodes.js";
+
+dotenv.config();
+
 const SECRET_KEY = process.env.JWT_SECRET || "VerySecret";
 
-module.exports.authenticateToken = (req, res, next) => {
+export const authenticateToken = (req, res, next) => {
   const header = req.headers["authorization"];
   const token = header && header.split(" ")[1];
 

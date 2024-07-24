@@ -1,11 +1,17 @@
-const express = require("express");
+import express from "express";
+import {
+  createComment,
+  getComment,
+  deleteComment,
+  updateComment,
+} from "../controllers/commentController.js";
+import { authenticateToken } from "../Middleware/auth.js";
+
 const router = express.Router();
-const commentController = require("../controllers/commentController");
-const { authenticateToken } = require("../Middleware/auth");
 
-router.post("/create", authenticateToken, commentController.createComment);
-router.get("/:id", commentController.getComment);
-router.delete("/:id", authenticateToken, commentController.deleteComment);
-router.put("/:id", authenticateToken, commentController.updateComment);
+router.post("/create", authenticateToken, createComment);
+router.get("/:id", getComment);
+router.delete("/:id", authenticateToken, deleteComment);
+router.put("/:id", authenticateToken, updateComment);
 
-module.exports = router;
+export default router;

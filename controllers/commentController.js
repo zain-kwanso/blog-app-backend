@@ -1,7 +1,9 @@
-const { Post, Comment } = require("../models");
-const statusCodes = require("../constants/statusCodes");
-const { Op } = require("sequelize");
+import db from "../models/index.js";
+import statusCodes from "../constants/statusCodes.js";
+import Op from "sequelize";
 
+const Post = db.User,
+  Comment = db.Comment;
 // Helper function to check authorization
 const isAuthorizedToDelete = (commentUserID, postUserID, currentUserID) =>
   commentUserID == currentUserID || postUserID == currentUserID;
@@ -27,6 +29,8 @@ const successResponse = (res, msg) =>
     .json({ message: `Comment ${msg} successfully` });
 
 // Helper function to construct the response for bad request
+
+//error throw
 const badRequestResponse = (res, error) =>
   res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
 
@@ -40,7 +44,7 @@ const findCommentById = async (commentID) =>
     },
   });
 
-exports.createComment = async (req, res) => {
+const createComment = async (req, res) => {
   try {
     const comment = await Comment.create({
       userID: req.user.userID,
@@ -52,7 +56,7 @@ exports.createComment = async (req, res) => {
   }
 };
 
-exports.getComment = async (req, res) => {
+const getComment = async (req, res) => {
   try {
     const comment = await Comment.findByPk(req.params.id);
     if (comment) {
@@ -65,7 +69,7 @@ exports.getComment = async (req, res) => {
   }
 };
 
-exports.deleteComment = async (req, res) => {
+const deleteComment = async (req, res) => {
   try {
     const commentID = req.params.id;
     const userID = req.user.userID;
@@ -92,7 +96,7 @@ exports.deleteComment = async (req, res) => {
   }
 };
 
-exports.updateComment = async (req, res) => {
+const updateComment = async (req, res) => {
   try {
     const commentID = req.params.id;
     const userID = req.user.userID;
@@ -116,3 +120,5 @@ exports.updateComment = async (req, res) => {
     return badRequestResponse(res, error);
   }
 };
+
+export { updateComment, deleteComment, getComment, createComment };

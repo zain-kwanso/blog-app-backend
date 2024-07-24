@@ -1,27 +1,22 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const userRoutes = require("./routes/userRoutes");
-const postRoutes = require("./routes/postRoutes");
-const commentRoutes = require("./routes/commentRoutes");
-const authRoutes = require("./routes/authRoutes");
-const { sequelize } = require("./models");
+import express from "express";
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
+import db from "./models/index.js";
+import routes from "./routes/index.js"; // Import your routes from a centralized routes file
+
+dotenv.config();
 
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 app.use(bodyParser.json());
 
-app.use("/users", userRoutes);
-app.use("/posts", postRoutes);
-app.use("/comments", commentRoutes);
-app.use("/auth", authRoutes);
+// Use the imported routes
+app.use("/", routes);
 
-app.get("/", (res, req) => {
-  return res.send("Hello world");
-});
 const dbSync = async () => {
   try {
-    await sequelize.sync();
+    await db.sequelize.sync();
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
@@ -31,3 +26,27 @@ const dbSync = async () => {
 };
 
 dbSync();
+
+// event driven architecture
+// Common JS Module
+// compilation, built in modules
+// javascript runtime environmeent
+// examples of Non blocking and blocking operations
+// multiple threads in Node js
+// remove comparison of fraework
+// middleware with Express, error handling globally, valiators
+// body parsers (part of middleware) req, res cycle
+// CORS, Routing, Configurations of ENV variables and dbs etc.
+// How to generate builds
+// node modules stucture
+// package.json and package-lock json
+// connections creation what is ORM, Mainly Sequelize
+// Authenticaiton section: Middleware
+// function generator concept, yeild
+// import export concept //meiator function
+
+// application should not crash......
+
+// Node js
+// Express
+// ORM

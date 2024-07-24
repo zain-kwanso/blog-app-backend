@@ -1,10 +1,13 @@
-require("dotenv").config();
-const { User } = require("../models");
-const jwt = require("jsonwebtoken");
-const statusCodes = require("../constants/statusCodes");
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import db from "../models/index.js";
+import statusCodes from "../constants/statusCodes.js";
+
+const User = db.User;
+dotenv.config();
 const SECRET_KEY = process.env.JWT_SECRET || "VerySecret";
 
-exports.signin = async (req, res) => {
+const signin = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({
@@ -29,7 +32,7 @@ exports.signin = async (req, res) => {
   }
 };
 
-exports.signup = async (req, res) => {
+const signup = async (req, res) => {
   try {
     const user = await User.create(req.body);
     const token = jwt.sign(
@@ -42,3 +45,5 @@ exports.signup = async (req, res) => {
     return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
   }
 };
+
+export { signin, signup };

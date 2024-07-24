@@ -1,6 +1,9 @@
-const { Post, Comment } = require("../models");
-const statusCodes = require("../constants/statusCodes");
-const { Op } = require("sequelize");
+import db from "../models/index.js";
+import statusCodes from "../constants/statusCodes.js";
+import Op from "sequelize";
+
+const Post = db.User,
+  Comment = db.Comment;
 
 // Helper function to find the post by ID
 const findPostById = async (postID) =>
@@ -93,7 +96,7 @@ const fetchPostsWithPaginationAndSearch = async (
   return { count, rows };
 };
 
-exports.createPost = async (req, res) => {
+const createPost = async (req, res) => {
   try {
     const post = await Post.create({ userID: req.user.userID, ...req.body });
     return res.status(statusCodes.CREATED).json(post);
@@ -102,7 +105,7 @@ exports.createPost = async (req, res) => {
   }
 };
 
-exports.getPost = async (req, res) => {
+const getPost = async (req, res) => {
   try {
     const post = await Post.findByPk(req.params.id);
     if (post) {
@@ -114,7 +117,7 @@ exports.getPost = async (req, res) => {
   }
 };
 
-exports.getPostsByUser = async (req, res) => {
+const getPostsByUser = async (req, res) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
@@ -151,7 +154,7 @@ exports.getPostsByUser = async (req, res) => {
   }
 };
 
-exports.getAllPosts = async (req, res) => {
+const getAllPosts = async (req, res) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
@@ -185,7 +188,7 @@ exports.getAllPosts = async (req, res) => {
   }
 };
 
-exports.deletePost = async (req, res) => {
+const deletePost = async (req, res) => {
   try {
     const postID = req.params.id;
     const userID = req.user.userID;
@@ -209,7 +212,7 @@ exports.deletePost = async (req, res) => {
   }
 };
 
-exports.updatePost = async (req, res) => {
+const updatePost = async (req, res) => {
   try {
     const postID = req.params.id;
     const userID = req.user.userID;
@@ -234,4 +237,13 @@ exports.updatePost = async (req, res) => {
   } catch (error) {
     return badRequestResponse(res, error);
   }
+};
+
+export {
+  updatePost,
+  deletePost,
+  getAllPosts,
+  getPostsByUser,
+  getPost,
+  createPost,
 };
