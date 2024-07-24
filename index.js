@@ -16,6 +16,9 @@ app.use("/posts", postRoutes);
 app.use("/comments", commentRoutes);
 app.use("/auth", authRoutes);
 
+app.get("/", (res, req) => {
+  return res.send("Hello world");
+});
 const dbSync = async () => {
   try {
     await sequelize.sync();
