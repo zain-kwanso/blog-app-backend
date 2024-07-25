@@ -2,19 +2,19 @@ import db from "../models/index.js";
 import statusCodes from "../constants/statusCodes.js";
 import Op from "sequelize";
 
-const Post = db.User,
+const Post = db.Post,
   Comment = db.Comment;
 
 // Helper function to find the post by ID
-const findPostById = async (postID) =>
+const findPostById = async (postId) =>
   await Post.findOne({
     where: {
-      postID: postID,
+      id: postId,
     },
   });
 
 // Helper function to check if the user is authorized to delete the post
-const isUserAuthorized = (post, userID) => post.userID === userID;
+const isUserAuthorized = (post, userId) => post.UserId === userId;
 
 // Helper function to construct the response for not found
 const notFoundResponse = (res) =>
@@ -27,10 +27,10 @@ const unauthorizedResponse = (res) =>
     .json({ error: "Not authorized to delete this post" });
 
 // Helper function to delete comments associated with the post
-const deleteComments = async (postID) =>
+const deleteComments = async (postId) =>
   await Comment.destroy({
     where: {
-      postID: postID,
+      PostId: postId,
     },
   });
 
@@ -55,7 +55,7 @@ const fetchPostsWithPaginationAndSearch = async (
   page,
   limit,
   search,
-  userID
+  userId
 ) => {
   const offset = page - 1;
   const searchCondition = search
@@ -67,7 +67,7 @@ const fetchPostsWithPaginationAndSearch = async (
       }
     : {};
 
-  const userCondition = userID ? { userID } : {};
+  const userCondition = userId ? { userId } : {};
 
   const whereCondition = { ...searchCondition, ...userCondition };
 
@@ -75,7 +75,7 @@ const fetchPostsWithPaginationAndSearch = async (
     where: whereCondition,
     include: {
       model: Comment,
-      where: { parentID: null },
+      where: { ParentId: null },
       required: false,
       include: {
         model: Comment,
@@ -91,14 +91,14 @@ const fetchPostsWithPaginationAndSearch = async (
     limit,
     offset,
   });
-  console.log(count);
+  // console.log(count);
 
   return { count, rows };
 };
 
 const createPost = async (req, res) => {
   try {
-    const post = await Post.create({ userID: req.user.userID, ...req.body });
+    const post = await Post.create({ UserId: req.user.id, ...req.body });
     return res.status(statusCodes.CREATED).json(post);
   } catch (error) {
     return badRequestResponse(res, error);
@@ -122,7 +122,7 @@ const getPostsByUser = async (req, res) => {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
     const search = req.query.search || "";
-    const userID = req.user ? req.user.userID : null;
+    const userID = req.user ? req.user.id : null;
 
     const { count, rows: posts } = await fetchPostsWithPaginationAndSearch(
       page,
@@ -190,20 +190,20 @@ const getAllPosts = async (req, res) => {
 
 const deletePost = async (req, res) => {
   try {
-    const postID = req.params.id;
-    const userID = req.user.userID;
+    const postId = req.params.id;
+    const userId = req.user.id;
 
-    const post = await findPostById(postID);
+    const post = await findPostById(postId);
 
     if (!post) {
       return notFoundResponse(res);
     }
 
-    if (!isUserAuthorized(post, userID)) {
+    if (!isUserAuthorized(post, userId)) {
       return unauthorizedResponse(res);
     }
 
-    await deleteComments(postID);
+    await deleteComments(postId);
     await post.destroy();
 
     return successResponse(res, "deleted");
@@ -214,17 +214,17 @@ const deletePost = async (req, res) => {
 
 const updatePost = async (req, res) => {
   try {
-    const postID = req.params.id;
-    const userID = req.user.userID;
+    const postId = req.params.id;
+    const userId = req.user.id;
     const { title, content } = req.body;
 
-    const post = await findPostById(postID);
+    const post = await findPostById(postId);
 
     if (!post) {
       return notFoundResponse(res);
     }
 
-    if (!isUserAuthorized(post, userID)) {
+    if (!isUserAuthorized(post, userId)) {
       return unauthorizedResponse(res);
     }
 

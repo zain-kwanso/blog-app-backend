@@ -22,10 +22,7 @@ const signin = async (req, res) => {
         .status(statusCodes.NOT_FOUND)
         .json({ error: "User not found" });
 
-    const token = jwt.sign(
-      { userID: user.userID, email: user.email },
-      SECRET_KEY
-    );
+    const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY);
     return res.status(statusCodes.SUCCESS).json(token);
   } catch (error) {
     return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
@@ -35,10 +32,7 @@ const signin = async (req, res) => {
 const signup = async (req, res) => {
   try {
     const user = await User.create(req.body);
-    const token = jwt.sign(
-      { userID: user.userID, email: user.email },
-      SECRET_KEY
-    );
+    const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY);
 
     return res.status(statusCodes.SUCCESS).json(token);
   } catch (error) {

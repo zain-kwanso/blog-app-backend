@@ -1,11 +1,11 @@
-export default (sequelize, DataTypes) => {
-  const User = sequelize.define("User", {
-    userID: {
+const userModel = (sequelize, DataTypes) => {
+  const User = sequelize.define("Users", {
+    id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    username: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -25,15 +25,17 @@ export default (sequelize, DataTypes) => {
 
   User.associate = function (models) {
     User.hasMany(models.Post, {
-      foreignKey: "userID",
+      foreignKey: "UserId",
       onDelete: "CASCADE",
     });
 
     User.hasMany(models.Comment, {
-      foreignKey: "userID",
+      foreignKey: "UserId",
       onDelete: "CASCADE",
     });
   };
 
   return User;
 };
+
+export default userModel;

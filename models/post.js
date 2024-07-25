@@ -1,6 +1,6 @@
-export default (sequelize, DataTypes) => {
-  const Post = sequelize.define("Post", {
-    postID: {
+const postModel = (sequelize, DataTypes) => {
+  const Post = sequelize.define("Posts", {
+    id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -13,26 +13,29 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    userID: {
+    UserId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: "Users",
-        key: "userID",
+        key: "id",
       },
     },
   });
 
   Post.associate = (models) => {
     Post.belongsTo(models.User, {
-      foreignKey: "userID",
+      foreignKey: "UserId",
+      onDelete: "CASCADE",
     });
 
     Post.hasMany(models.Comment, {
-      foreignKey: "postID",
+      foreignKey: "PostId",
       onDelete: "CASCADE",
     });
   };
 
   return Post;
 };
+
+export default postModel;

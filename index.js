@@ -33,7 +33,7 @@ dbSync();
 // javascript runtime environmeent
 // examples of Non blocking and blocking operations
 // multiple threads in Node js
-// remove comparison of fraework
+// remove comparison of framework
 // middleware with Express, error handling globally, valiators
 // body parsers (part of middleware) req, res cycle
 // CORS, Routing, Configurations of ENV variables and dbs etc.

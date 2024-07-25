@@ -35,19 +35,19 @@ const badRequestResponse = (res, error) =>
   res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
 
 // Helper function to find the comment by ID
-const findCommentById = async (commentID) =>
+const findCommentById = async (commentId) =>
   await Comment.findOne({
-    where: { commentID },
+    where: { id: commentId },
     include: {
       model: Post,
-      attributes: ["userID"],
+      attributes: ["UserId"],
     },
   });
 
 const createComment = async (req, res) => {
   try {
     const comment = await Comment.create({
-      userID: req.user.userID,
+      UserId: req.user.id,
       ...req.body,
     });
     return res.status(statusCodes.CREATED).json(comment);
@@ -71,22 +71,22 @@ const getComment = async (req, res) => {
 
 const deleteComment = async (req, res) => {
   try {
-    const commentID = req.params.id;
-    const userID = req.user.userID;
+    const commentId = req.params.id;
+    const userId = req.user.ussequelizeerID;
 
-    const comment = await findCommentById(commentID);
+    const comment = await findCommentById(commentId);
 
     if (!comment) {
       return notFoundResponse(res);
     }
 
-    if (!isAuthorizedToDelete(comment.userID, comment.Post.userID, userID)) {
+    if (!isAuthorizedToDelete(comment.UserId, comment.Post.UserId, userId)) {
       return notAuthorizedResponse(res);
     }
 
     await Comment.destroy({
       where: {
-        [Op.or]: [{ commentID }, { parentID: commentID }],
+        [Op.or]: [{ id: commentId }, { ParentId: commentId }],
       },
     });
 
@@ -98,17 +98,17 @@ const deleteComment = async (req, res) => {
 
 const updateComment = async (req, res) => {
   try {
-    const commentID = req.params.id;
-    const userID = req.user.userID;
+    const commentId = req.params.id;
+    const userId = req.user.id;
     const { content } = req.body;
 
-    const comment = await findCommentById(commentID);
+    const comment = await findCommentById(commentId);
 
     if (!comment) {
       return notFoundResponse(res);
     }
 
-    if (!isUserAuthorizedToUpdate(comment, userID)) {
+    if (!isUserAuthorizedToUpdate(comment, userId)) {
       return unauthorizedResponse(res);
     }
 
