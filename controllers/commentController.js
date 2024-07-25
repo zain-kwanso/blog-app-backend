@@ -1,64 +1,32 @@
-import db from "../models/index.js";
+import {
+  unauthorizedResponse,
+  notFoundResponse,
+  successResponse,
+  badRequestResponse,
+} from "../utils/response.js";
+import {
+  findCommentById,
+  isAuthorizedToDelete,
+  isUserAuthorizedToUpdate,
+  deleteCommentById,
+  createCommentService,
+  getCommentService,
+  updateCommentService,
+} from "../services/commentService.js";
 import statusCodes from "../constants/statusCodes.js";
-import Op from "sequelize";
 
-const Post = db.User,
-  Comment = db.Comment;
-// Helper function to check authorization
-const isAuthorizedToDelete = (commentUserID, postUserID, currentUserID) =>
-  commentUserID == currentUserID || postUserID == currentUserID;
-
-// Helper function to check if the user is authorized to update the comment
-const isUserAuthorizedToUpdate = (comment, userID) =>
-  comment.userID === userID || comment.Post.userID === userID;
-
-// Helper function to construct the response for not authorized
-const notAuthorizedResponse = (res) =>
-  res
-    .status(statusCodes.FORBIDDEN)
-    .json({ error: "Not authorized to delete this comment" });
-
-// Helper function to construct the response for not found
-const notFoundResponse = (res) =>
-  res.status(statusCodes.NOT_FOUND).json({ error: "Comment not found" });
-
-// Helper function to construct the response for success
-const successResponse = (res, msg) =>
-  res
-    .status(statusCodes.SUCCESS)
-    .json({ message: `Comment ${msg} successfully` });
-
-// Helper function to construct the response for bad request
-
-//error throw
-const badRequestResponse = (res, error) =>
-  res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
-
-// Helper function to find the comment by ID
-const findCommentById = async (commentId) =>
-  await Comment.findOne({
-    where: { id: commentId },
-    include: {
-      model: Post,
-      attributes: ["UserId"],
-    },
-  });
-
-const createComment = async (req, res) => {
+const createCommentController = async (req, res) => {
   try {
-    const comment = await Comment.create({
-      UserId: req.user.id,
-      ...req.body,
-    });
+    const comment = await createCommentService(req.user.id, req.body);
     return res.status(statusCodes.CREATED).json(comment);
   } catch (error) {
     return badRequestResponse(res, error);
   }
 };
 
-const getComment = async (req, res) => {
+const getCommentController = async (req, res) => {
   try {
-    const comment = await Comment.findByPk(req.params.id);
+    const comment = await getCommentService(req.params.id);
     if (comment) {
       return res.status(statusCodes.SUCCESS).json(comment);
     } else {
@@ -69,10 +37,10 @@ const getComment = async (req, res) => {
   }
 };
 
-const deleteComment = async (req, res) => {
+const deleteCommentController = async (req, res) => {
   try {
     const commentId = req.params.id;
-    const userId = req.user.ussequelizeerID;
+    const userId = req.user.id;
 
     const comment = await findCommentById(commentId);
 
@@ -81,14 +49,10 @@ const deleteComment = async (req, res) => {
     }
 
     if (!isAuthorizedToDelete(comment.UserId, comment.Post.UserId, userId)) {
-      return notAuthorizedResponse(res);
+      return unauthorizedResponse(res);
     }
 
-    await Comment.destroy({
-      where: {
-        [Op.or]: [{ id: commentId }, { ParentId: commentId }],
-      },
-    });
+    await deleteCommentById(commentId);
 
     return successResponse(res, "deleted");
   } catch (error) {
@@ -96,7 +60,7 @@ const deleteComment = async (req, res) => {
   }
 };
 
-const updateComment = async (req, res) => {
+const updateCommentController = async (req, res) => {
   try {
     const commentId = req.params.id;
     const userId = req.user.id;
@@ -112,8 +76,7 @@ const updateComment = async (req, res) => {
       return unauthorizedResponse(res);
     }
 
-    comment.content = content;
-    await comment.save();
+    await updateCommentService(comment, content);
 
     return successResponse(res, "updated");
   } catch (error) {
@@ -121,4 +84,9 @@ const updateComment = async (req, res) => {
   }
 };
 
-export { updateComment, deleteComment, getComment, createComment };
+export {
+  createCommentController as createComment,
+  getCommentController as getComment,
+  deleteCommentController as deleteComment,
+  updateCommentController as updateComment,
+};

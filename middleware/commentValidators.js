@@ -2,7 +2,7 @@ import { check, validationResult } from "express-validator";
 
 const commentCreationRules = [
   check("content").notEmpty().withMessage("Content is required"),
-  check("UserId").notEmpty().withMessage("UserId is required"),
+
   check("PostId")
     .notEmpty()
     .withMessage("PostId is required")
