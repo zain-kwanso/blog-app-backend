@@ -31,13 +31,23 @@ const signin = async (req, res) => {
 
 const signup = async (req, res) => {
   try {
-    const user = await User.create(req.body);
-    const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY);
+    const { email } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+    if (user) {
+      return res
+        .status(statusCodes.BAD_REQUEST)
+        .json({ error: "E-mail already in use" });
+    }
+    const newUser = await User.create(req.body);
+    const token = jwt.sign(
+      { id: newUser.id, email: newUser.email },
+      SECRET_KEY
+    );
 
     return res.status(statusCodes.SUCCESS).json(token);
   } catch (error) {
     return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
   }
 };
-
 export { signin, signup };
