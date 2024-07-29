@@ -2,25 +2,18 @@
 import db from "../models/index.js";
 
 const Comment = db.Comment;
-const Post = db.Post;
 
 // Helper function to find the comment by ID
 const findCommentById = async (commentId) =>
   await Comment.findOne({
-    where: { id: commentId },
-    include: {
-      model: Post,
-      attributes: ["UserId"],
+    where: {
+      id: commentId,
     },
   });
 
 // Helper function to check authorization
-const isAuthorizedToDelete = (commentUserID, postUserID, currentUserID) =>
-  commentUserID == currentUserID || postUserID == currentUserID;
-
-// Helper function to check if the user is authorized to update the comment
-const isUserAuthorizedToUpdate = (comment, userID) =>
-  comment.userID === userID || comment.Post.userID === userID;
+const isAuthorized = (commentUserID, currentUserID) =>
+  commentUserID == currentUserID;
 
 // Helper function to delete comment
 const deleteCommentService = async (commentId) => {
@@ -52,8 +45,7 @@ const updateCommentService = async (comment, content) => {
 
 export {
   findCommentById,
-  isAuthorizedToDelete,
-  isUserAuthorizedToUpdate,
+  isAuthorized,
   deleteCommentService,
   createCommentService,
   getCommentService,

@@ -1,7 +1,6 @@
 import {
   findCommentById,
-  isAuthorizedToDelete,
-  isUserAuthorizedToUpdate,
+  isAuthorized,
   deleteCommentService,
   createCommentService,
   getCommentService,
@@ -46,7 +45,7 @@ const deleteCommentController = async (req, res) => {
         .json({ error: "Comment not found" });
     }
 
-    if (!isAuthorizedToDelete(comment.UserId, comment.Post.UserId, userId)) {
+    if (!isAuthorized(comment.UserId, userId)) {
       return res
         .status(statusCodes.FORBIDDEN)
         .json({ error: "Not authorized to delete this comment" });
@@ -76,10 +75,10 @@ const updateCommentController = async (req, res) => {
         .json({ error: "Comment not found" });
     }
 
-    if (!isUserAuthorizedToUpdate(comment, userId)) {
+    if (!isAuthorized(comment.UserId, userId)) {
       return res
         .status(statusCodes.FORBIDDEN)
-        .json({ error: "Not authorized to delete this comment" });
+        .json({ error: "Not authorized to update this comment" });
     }
 
     await updateCommentService(comment, content);
