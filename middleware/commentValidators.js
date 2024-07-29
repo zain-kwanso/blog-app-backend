@@ -1,5 +1,5 @@
 import { body, param, validationResult } from "express-validator";
-import { statusCodes } from "../constants/statusCodes";
+import { statusCodes } from "../constants/statusCodes.js";
 const commentCreationRules = [
   body("content").notEmpty().withMessage("Content is required"),
 
