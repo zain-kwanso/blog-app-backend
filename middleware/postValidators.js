@@ -1,26 +1,26 @@
-import { check, validationResult } from "express-validator";
+import { body, param, validationResult } from "express-validator";
 
 const postCreationRules = [
-  check("title")
+  body("title")
     .notEmpty()
     .withMessage("Title is required")
     .isLength({ max: 255 })
     .withMessage("Title must be less than 255 characters"),
-  check("content").notEmpty().withMessage("Content is required"),
+  body("content").notEmpty().withMessage("Content is required"),
 ];
 
 const postDeleteRules = [
-  check("id").isInt().withMessage("Valid id is required"),
+  param("id").isInt().withMessage("Valid id is required"),
 ];
 
 const postUpdateRules = [
-  check("id").isInt().withMessage("Valid id is required to update the post"),
-  check("title")
+  param("id").isInt().withMessage("Valid id is required to update the post"),
+  body("title")
     .notEmpty()
     .withMessage("Title cannot be empty")
     .isLength({ max: 255 })
     .withMessage("Title must be less than 255 characters"),
-  check("content").notEmpty().withMessage("Content cannot be empty"),
+  body("content").notEmpty().withMessage("Content cannot be empty"),
 ];
 
 const validate = (req, res, next) => {
