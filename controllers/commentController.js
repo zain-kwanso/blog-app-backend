@@ -1,26 +1,20 @@
 import {
-  unauthorizedResponse,
-  notFoundResponse,
-  successResponse,
-  badRequestResponse,
-} from "../utils/response.js";
-import {
   findCommentById,
   isAuthorizedToDelete,
   isUserAuthorizedToUpdate,
-  deleteCommentById,
+  deleteCommentService,
   createCommentService,
   getCommentService,
   updateCommentService,
 } from "../services/commentService.js";
-import statusCodes from "../constants/statusCodes.js";
+import { statusCodes } from "../constants/statusCodes.js";
 
 const createCommentController = async (req, res) => {
   try {
     const comment = await createCommentService(req.user.id, req.body);
     return res.status(statusCodes.CREATED).json(comment);
   } catch (error) {
-    return badRequestResponse(res, error);
+    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
   }
 };
 
@@ -30,10 +24,12 @@ const getCommentController = async (req, res) => {
     if (comment) {
       return res.status(statusCodes.SUCCESS).json(comment);
     } else {
-      return notFoundResponse(res);
+      return res
+        .status(statusCodes.NOT_FOUND)
+        .json({ error: "Comment not found" });
     }
   } catch (error) {
-    return badRequestResponse(res, error);
+    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
   }
 };
 
@@ -45,18 +41,24 @@ const deleteCommentController = async (req, res) => {
     const comment = await findCommentById(commentId);
 
     if (!comment) {
-      return notFoundResponse(res);
+      return res
+        .status(statusCodes.NOT_FOUND)
+        .json({ error: "Comment not found" });
     }
 
     if (!isAuthorizedToDelete(comment.UserId, comment.Post.UserId, userId)) {
-      return unauthorizedResponse(res);
+      return res
+        .status(statusCodes.FORBIDDEN)
+        .json({ error: "Not authorized to delete this comment" });
     }
 
-    await deleteCommentById(commentId);
+    await deleteCommentService(commentId);
 
-    return successResponse(res, "deleted");
+    return res
+      .status(statusCodes.SUCCESS)
+      .json({ message: `Comment deleted successfully` });
   } catch (error) {
-    return badRequestResponse(res, error);
+    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
   }
 };
 
@@ -69,18 +71,24 @@ const updateCommentController = async (req, res) => {
     const comment = await findCommentById(commentId);
 
     if (!comment) {
-      return notFoundResponse(res);
+      return res
+        .status(statusCodes.NOT_FOUND)
+        .json({ error: "Comment not found" });
     }
 
     if (!isUserAuthorizedToUpdate(comment, userId)) {
-      return unauthorizedResponse(res);
+      return res
+        .status(statusCodes.FORBIDDEN)
+        .json({ error: "Not authorized to delete this comment" });
     }
 
     await updateCommentService(comment, content);
 
-    return successResponse(res, "updated");
+    return res
+      .status(statusCodes.SUCCESS)
+      .json({ message: `Comment updated successfully` });
   } catch (error) {
-    return badRequestResponse(res, error);
+    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
   }
 };
 

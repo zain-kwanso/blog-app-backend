@@ -1,6 +1,5 @@
 // commentService.js
 import db from "../models/index.js";
-import Op from "sequelize";
 
 const Comment = db.Comment;
 const Post = db.Post;
@@ -24,12 +23,7 @@ const isUserAuthorizedToUpdate = (comment, userID) =>
   comment.userID === userID || comment.Post.userID === userID;
 
 // Helper function to delete comment
-const deleteCommentById = async (commentId) => {
-  await Comment.destroy({
-    where: {
-      ParentId: commentId,
-    },
-  });
+const deleteCommentService = async (commentId) => {
   await Comment.destroy({
     where: {
       id: commentId,
@@ -60,7 +54,7 @@ export {
   findCommentById,
   isAuthorizedToDelete,
   isUserAuthorizedToUpdate,
-  deleteCommentById,
+  deleteCommentService,
   createCommentService,
   getCommentService,
   updateCommentService,

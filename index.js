@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import db from "./models/index.js";
-import routes from "./routes/index.js"; // Import your routes from a centralized routes file
+import routes from "./routes/index.js";
 
 dotenv.config();
 
@@ -43,7 +43,7 @@ dbSync();
 // connections creation what is ORM, Mainly Sequelize
 // Authenticaiton section: Middleware
 // function generator concept, yeild
-// import export concept //meiator function
+// import export concept //mediator function
 
 // application should not crash......
 

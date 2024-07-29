@@ -1,21 +1,14 @@
-import statusCodes from "../constants/statusCodes.js";
+import { statusCodes } from "../constants/statusCodes.js";
 import {
-  findPostById,
+  findPostByIdService,
   isUserAuthorized,
   fetchPostsWithPaginationAndSearch,
   createPostService,
   getPostService,
   updatePostService,
   deletePostService,
-  deleteCommentsByPostId,
+  deleteCommentsByPostIdService,
 } from "../services/postService.js";
-
-import {
-  unauthorizedResponse,
-  notFoundResponse,
-  successResponse,
-  badRequestResponse,
-} from "../utils/response.js";
 
 // Helper function to construct next page URL
 const constructNextPageUrl = (req, nextPage, limit) =>
@@ -30,7 +23,7 @@ const createPostController = async (req, res) => {
     const post = await createPostService(req.user.id, req.body);
     return res.status(statusCodes.CREATED).json(post);
   } catch (error) {
-    return badRequestResponse(res, error);
+    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
   }
 };
 
@@ -40,9 +33,9 @@ const getPostController = async (req, res) => {
     if (post) {
       return res.status(statusCodes.SUCCESS).json(post);
     }
-    return notFoundResponse(res);
+    return res.status(statusCodes.NOT_FOUND).json({ error: "Post not found" });
   } catch (error) {
-    return badRequestResponse(res, error);
+    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
   }
 };
 
@@ -62,7 +55,7 @@ const getPostsByUserController = async (req, res) => {
     if (posts.length === 0) {
       return res
         .status(statusCodes.NOT_FOUND)
-        .json({ error: "No posts found" });
+        .json({ error: "Post not found" });
     }
 
     const nextPageUrl = constructNextPageUrl(req, nextPage, limit);
@@ -76,7 +69,7 @@ const getPostsByUserController = async (req, res) => {
       },
     });
   } catch (error) {
-    return badRequestResponse(res, error);
+    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
   }
 };
 
@@ -108,7 +101,7 @@ const getAllPostsController = async (req, res) => {
       },
     });
   } catch (error) {
-    return badRequestResponse(res, error);
+    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
   }
 };
 
@@ -117,22 +110,28 @@ const deletePostController = async (req, res) => {
     const postId = req.params.id;
     const userId = req.user.id;
 
-    const post = await findPostById(postId);
+    const post = await findPostByIdService(postId);
 
     if (!post) {
-      return notFoundResponse(res);
+      return res
+        .status(statusCodes.NOT_FOUND)
+        .json({ error: "Post not found" });
     }
 
     if (!isUserAuthorized(post, userId)) {
-      return unauthorizedResponse(res);
+      return res
+        .status(statusCodes.FORBIDDEN)
+        .json({ error: "Not authorized to delete this Post" });
     }
 
-    await deleteCommentsByPostId(postId);
+    await deleteCommentsByPostIdService(postId);
     await deletePostService(post);
 
-    return successResponse(res, "deleted");
+    return res
+      .status(statusCodes.SUCCESS)
+      .json({ message: `Post deleted successfully` });
   } catch (error) {
-    return badRequestResponse(res, error);
+    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
   }
 };
 
@@ -145,18 +144,24 @@ const updatePostController = async (req, res) => {
     const post = await findPostById(postId);
 
     if (!post) {
-      return notFoundResponse(res);
+      return res
+        .status(statusCodes.NOT_FOUND)
+        .json({ error: "Post not found" });
     }
 
     if (!isUserAuthorized(post, userId)) {
-      return unauthorizedResponse(res);
+      return res
+        .status(statusCodes.FORBIDDEN)
+        .json({ error: "Not authorized to delete this post" });
     }
 
     await updatePostService(post, { title, content });
 
-    return successResponse(res, "updated");
+    return res
+      .status(statusCodes.SUCCESS)
+      .json({ message: `Post updated successfully` });
   } catch (error) {
-    return badRequestResponse(res, error);
+    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
   }
 };
 

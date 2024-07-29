@@ -1,4 +1,4 @@
-import statusCodes from "../constants/statusCodes.js";
+import { statusCodes } from "../constants/statusCodes.js";
 
 // Helper function to construct the response for not authorized
 const unauthorizedResponse = (res) =>
@@ -14,7 +14,7 @@ const notFoundResponse = (res) =>
 const successResponse = (res, msg) =>
   res
     .status(statusCodes.SUCCESS)
-    .json({ message: `Comment ${msg} successfully` });
+    .json({ message: `Comment deleted successfully` });
 
 // Helper function to construct the response for bad request
 const badRequestResponse = (res, error) =>

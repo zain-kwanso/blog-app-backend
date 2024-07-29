@@ -6,7 +6,7 @@ const Post = db.Post;
 const Comment = db.Comment;
 
 // Helper function to find the post by ID
-const findPostById = async (postId) => {
+const findPostByIdService = async (postId) => {
   return await Post.findOne({
     where: {
       id: postId,
@@ -18,7 +18,7 @@ const findPostById = async (postId) => {
 const isUserAuthorized = (post, userId) => post.UserId === userId;
 
 // Helper function to delete comments associated with the post
-const deleteCommentsByPostId = async (postId) => {
+const deleteCommentsByPostIdService = async (postId) => {
   return await Comment.destroy({
     where: {
       PostId: postId,
@@ -95,9 +95,9 @@ const deletePostService = async (post) => {
 };
 
 export {
-  findPostById,
+  findPostByIdService,
   isUserAuthorized,
-  deleteCommentsByPostId,
+  deleteCommentsByPostIdService,
   fetchPostsWithPaginationAndSearch,
   createPostService,
   getPostService,

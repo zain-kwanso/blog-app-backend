@@ -15,7 +15,7 @@ const signinService = async (email, password) => {
   });
 
   if (!user) {
-    throw new Error("User not found");
+    return null;
   }
 
   const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY);

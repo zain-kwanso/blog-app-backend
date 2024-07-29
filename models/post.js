@@ -1,4 +1,6 @@
-const postModel = (sequelize, DataTypes) => {
+import { DataTypes } from "sequelize";
+
+const postModel = (sequelize) => {
   const Post = sequelize.define("Posts", {
     id: {
       type: DataTypes.INTEGER,
