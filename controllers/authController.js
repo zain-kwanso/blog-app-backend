@@ -1,7 +1,7 @@
 import { statusCodes } from "../constants/statusCodes.js";
 import { signinService, signupService } from "../services/userService.js";
 
-const signin = async (req, res) => {
+const signinController = async (req, res) => {
   try {
     const { email, password } = req.body;
     const token = await signinService(email, password);
@@ -16,7 +16,7 @@ const signin = async (req, res) => {
   }
 };
 
-const signup = async (req, res) => {
+const signupController = async (req, res) => {
   try {
     const token = await signupService(req.body);
     return res.status(statusCodes.SUCCESS).json({ token });
@@ -28,4 +28,4 @@ const signup = async (req, res) => {
   }
 };
 
-export { signin, signup };
+export { signinController as signin, signupController as signup };

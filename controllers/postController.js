@@ -8,15 +8,8 @@ import {
   updatePostService,
   deletePostService,
   deleteCommentsByPostIdService,
+  constructNextPageUrlService,
 } from "../services/postService.js";
-
-// Helper function to construct next page URL
-const constructNextPageUrl = (req, nextPage, limit) =>
-  nextPage
-    ? `${req.protocol}://${req.get("host")}${
-        req.baseUrl
-      }?page=${nextPage}&limit=${limit}&search=${req.query.search || ""}`
-    : null;
 
 const createPostController = async (req, res) => {
   try {
@@ -58,7 +51,7 @@ const getPostsByUserController = async (req, res) => {
         .json({ error: "Post not found" });
     }
 
-    const nextPageUrl = constructNextPageUrl(req, nextPage, limit);
+    const nextPageUrl = constructNextPageUrlService(req, nextPage, limit);
 
     return res.status(statusCodes.SUCCESS).json({
       posts,
@@ -90,7 +83,7 @@ const getAllPostsController = async (req, res) => {
         .status(statusCodes.NOT_FOUND)
         .json({ error: "No posts found" });
     }
-    const nextPageUrl = constructNextPageUrl(req, nextPage, limit);
+    const nextPageUrl = constructNextPageUrlService(req, nextPage, limit);
 
     return res.status(statusCodes.SUCCESS).json({
       posts,

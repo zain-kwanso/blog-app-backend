@@ -26,6 +26,14 @@ const deleteCommentsByPostIdService = async (postId) => {
   });
 };
 
+// Helper function to construct next page URL
+const constructNextPageUrlService = (req, nextPage, limit) =>
+  nextPage
+    ? `${req.protocol}://${req.get("host")}${
+        req.baseUrl
+      }?page=${nextPage}&limit=${limit}&search=${req.query.search || ""}`
+    : null;
+
 // Helper function to fetch posts with pagination and search
 const fetchPostsWithPaginationAndSearch = async (
   page,
@@ -103,4 +111,5 @@ export {
   getPostService,
   updatePostService,
   deletePostService,
+  constructNextPageUrlService,
 };
