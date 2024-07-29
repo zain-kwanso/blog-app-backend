@@ -20,4 +20,4 @@ if (env == "production") {
   });
 }
 
-export { sequelize };
+export default sequelize;

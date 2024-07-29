@@ -1,4 +1,4 @@
-import { sequelize } from "../sequelize/config.js";
+import sequelize from "../sequelize/config.js";
 import { DataTypes } from "sequelize";
 
 const Comment = sequelize.define("Comments", {

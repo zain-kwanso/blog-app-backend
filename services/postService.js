@@ -1,6 +1,6 @@
 // postService.js
 
-import Op from "sequelize";
+import { Sequelize } from "sequelize";
 
 import Post from "../models/post.js";
 import Comment from "../models/comment.js";
@@ -39,17 +39,17 @@ const constructNextPageUrlService = (req, nextPage, limit) =>
 
 // Helper function to fetch posts with pagination and search
 const fetchPostsWithPaginationAndSearch = async (
-  page,
-  limit,
+  page = 1,
+  limit = 10,
   search,
   userId
 ) => {
   const offset = (page - 1) * limit;
   const searchCondition = search
     ? {
-        [Op.or]: [
-          { title: { [Op.iLike]: `%${search}%` } },
-          { content: { [Op.iLike]: `%${search}%` } },
+        [Sequelize.Op.or]: [
+          { title: { [Sequelize.Op.iLike]: `%${search}%` } },
+          { content: { [Sequelize.Op.iLike]: `%${search}%` } },
         ],
       }
     : {};
@@ -57,7 +57,6 @@ const fetchPostsWithPaginationAndSearch = async (
   const userCondition = userId ? { UserId: userId } : {};
 
   const whereCondition = { ...searchCondition, ...userCondition };
-
   const { count, rows } = await Post.findAndCountAll({
     where: whereCondition,
     include: {
@@ -81,7 +80,6 @@ const fetchPostsWithPaginationAndSearch = async (
 
   const totalPages = Math.ceil((count - 1) / limit);
   const nextPage = page < totalPages ? page + 1 : null;
-
   return { rows, totalPages, nextPage };
 };
 
