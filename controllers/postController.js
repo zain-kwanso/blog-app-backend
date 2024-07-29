@@ -134,7 +134,7 @@ const updatePostController = async (req, res) => {
     const userId = req.user.id;
     const { title, content } = req.body;
 
-    const post = await findPostById(postId);
+    const post = await findPostByIdService(postId);
 
     if (!post) {
       return res

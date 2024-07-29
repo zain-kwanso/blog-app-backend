@@ -1,9 +1,12 @@
 // postService.js
-import db from "../models/index.js";
+
 import Op from "sequelize";
 
-const Post = db.Post;
-const Comment = db.Comment;
+import Post from "../models/post.js";
+import Comment from "../models/comment.js";
+
+// const Post = db.Post;
+// const Comment = db.Comment;
 
 // Helper function to find the post by ID
 const findPostByIdService = async (postId) => {

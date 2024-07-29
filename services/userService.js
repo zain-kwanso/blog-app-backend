@@ -1,8 +1,8 @@
 // services/userService.js
-import db from "../models/index.js";
+import User from "../models/user.js";
 import jwt from "jsonwebtoken";
 
-const User = db.User;
+// const User = db.User;
 const SECRET_KEY = process.env.JWT_SECRET || "VerySecret";
 
 // Signin service

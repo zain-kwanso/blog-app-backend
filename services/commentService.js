@@ -1,7 +1,6 @@
-// commentService.js
-import db from "../models/index.js";
+import Comment from "../models/comment.js";
 
-const Comment = db.Comment;
+// const Comment = db.Comment;
 
 // Helper function to find the comment by ID
 const findCommentService = async (commentId) =>
