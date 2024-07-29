@@ -4,7 +4,7 @@ import db from "../models/index.js";
 const Comment = db.Comment;
 
 // Helper function to find the comment by ID
-const findCommentById = async (commentId) =>
+const findCommentService = async (commentId) =>
   await Comment.findOne({
     where: {
       id: commentId,
@@ -44,7 +44,7 @@ const updateCommentService = async (comment, content) => {
 };
 
 export {
-  findCommentById,
+  findCommentService,
   isAuthorized,
   deleteCommentService,
   createCommentService,

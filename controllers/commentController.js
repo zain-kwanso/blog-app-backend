@@ -1,5 +1,5 @@
 import {
-  findCommentById,
+  findCommentService,
   isAuthorized,
   deleteCommentService,
   createCommentService,
@@ -37,7 +37,7 @@ const deleteCommentController = async (req, res) => {
     const commentId = req.params.id;
     const userId = req.user.id;
 
-    const comment = await findCommentById(commentId);
+    const comment = await findCommentService(commentId);
 
     if (!comment) {
       return res
@@ -67,7 +67,7 @@ const updateCommentController = async (req, res) => {
     const userId = req.user.id;
     const { content } = req.body;
 
-    const comment = await findCommentById(commentId);
+    const comment = await findCommentService(commentId);
 
     if (!comment) {
       return res

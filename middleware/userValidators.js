@@ -1,5 +1,5 @@
 import { body, validationResult } from "express-validator";
-
+import { statusCodes } from "../constants/statusCodes";
 const userValidationRules = [
   body("name").notEmpty().withMessage("Name is required"),
   body("email").isEmail().withMessage("Enter a valid email address"),
@@ -16,7 +16,7 @@ const loginValidationRules = [
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(statusCodes.BAD_REQUEST).json({ errors: errors.array() });
   }
   next();
 };

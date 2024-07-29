@@ -28,7 +28,7 @@ const signupService = async (userData) => {
 
   const existingUser = await User.findOne({ where: { email } });
   if (existingUser) {
-    throw new Error("E-mail already in use");
+    return null;
   }
 
   const newUser = await User.create(userData);
