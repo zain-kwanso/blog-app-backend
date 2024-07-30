@@ -2,8 +2,8 @@
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { error } from "console";
 
-// const User = db.User;
 const SECRET_KEY = process.env.JWT_SECRET || "VerySecret";
 // Signin service
 const signinService = async (email, password) => {
@@ -15,7 +15,7 @@ const signinService = async (email, password) => {
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
-    return null;
+    throw new Error("Invalid credentials");
   }
 
   const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY);
