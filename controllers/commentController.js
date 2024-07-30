@@ -7,10 +7,17 @@ import {
   updateCommentService,
 } from "../services/commentService.js";
 import { statusCodes } from "../constants/statusCodes.js";
+import { error } from "console";
 
 const createCommentController = async (req, res) => {
   try {
     const comment = await createCommentService(req.user.id, req.body);
+    if (!comment) {
+      console.log(comment);
+      return res
+        .status(statusCodes.BAD_REQUEST)
+        .json({ error: "PostId not valid" });
+    }
     return res.status(statusCodes.CREATED).json(comment);
   } catch (error) {
     return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });

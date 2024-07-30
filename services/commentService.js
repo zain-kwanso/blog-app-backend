@@ -25,10 +25,20 @@ const deleteCommentService = async (commentId) => {
 
 // Create a new comment
 const createCommentService = async (userId, commentData) => {
-  return await Comment.create({
-    UserId: userId,
-    ...commentData,
-  });
+  const { ParentId, PostId } = commentData;
+  if (!ParentId)
+    return await Comment.create({
+      UserId: userId,
+      ...commentData,
+    });
+  const comment = await Comment.findByPk(ParentId);
+  if (comment.PostId == PostId) {
+    return await Comment.create({
+      UserId: userId,
+      ...commentData,
+    });
+  }
+  return null;
 };
 
 // Get a comment by ID
