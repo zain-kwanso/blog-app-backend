@@ -1,7 +1,10 @@
 import { StatusCodes } from "http-status-codes";
-import { signinService, signupService } from "../services/userService.js";
+import {
+  signin as signinService,
+  signup as signupService,
+} from "../services/userService.js";
 
-const signinController = async (req, res) => {
+const signin = async (req, res) => {
   try {
     const { email, password } = req.body;
     const token = await signinService(email, password);
@@ -19,13 +22,13 @@ const signinController = async (req, res) => {
   }
 };
 
-const signupController = async (req, res) => {
+const signup = async (req, res) => {
   try {
     const token = await signupService(req.body);
 
     if (!token) {
       return res
-        .status(StatusCodes.BAD_REQUEST)
+        .status(StatusCodes.FORBIDDEN)
         .json({ error: "Email already in use" });
     }
 
@@ -38,4 +41,4 @@ const signupController = async (req, res) => {
   }
 };
 
-export { signinController as signin, signupController as signup };
+export { signin, signup };

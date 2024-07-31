@@ -10,7 +10,7 @@ import {
   commentCreationRules,
   commentDeleteRules,
 } from "../middleware/commentValidators.js";
-import { validate } from "../middleware/validationRules.js";
+import { validate } from "../middleware/validationCheck.js";
 
 const router = express.Router();
 

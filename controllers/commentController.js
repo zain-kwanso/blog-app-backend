@@ -1,14 +1,14 @@
 import {
-  findCommentService,
+  findComment as findCommentService,
   isAuthorized,
-  deleteCommentService,
-  createCommentService,
-  getCommentService,
-  updateCommentService,
+  deleteComment as deleteCommentService,
+  createComment as createCommentService,
+  getComment as getCommentService,
+  updateComment as updateCommentService,
 } from "../services/commentService.js";
 import { StatusCodes } from "http-status-codes";
 
-const createCommentController = async (req, res) => {
+const createComment = async (req, res) => {
   try {
     const comment = await createCommentService(req.user.id, req.body);
     if (!comment) {
@@ -26,7 +26,7 @@ const createCommentController = async (req, res) => {
   }
 };
 
-const getCommentController = async (req, res) => {
+const getComment = async (req, res) => {
   try {
     const comment = await getCommentService(req.params.id);
     if (comment) {
@@ -44,7 +44,7 @@ const getCommentController = async (req, res) => {
   }
 };
 
-const deleteCommentController = async (req, res) => {
+const deleteComment = async (req, res) => {
   try {
     const commentId = req.params.id;
     const userId = req.user.id;
@@ -76,7 +76,7 @@ const deleteCommentController = async (req, res) => {
   }
 };
 
-const updateCommentController = async (req, res) => {
+const updateComment = async (req, res) => {
   try {
     const commentId = req.params.id;
     const userId = req.user.id;
@@ -109,9 +109,4 @@ const updateCommentController = async (req, res) => {
   }
 };
 
-export {
-  createCommentController as createComment,
-  getCommentController as getComment,
-  deleteCommentController as deleteComment,
-  updateCommentController as updateComment,
-};
+export { createComment, getComment, deleteComment, updateComment };

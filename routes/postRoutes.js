@@ -12,7 +12,7 @@ import {
   postDeleteRules,
   postUpdateRules,
 } from "../middleware/postValidators.js";
-import { validate } from "../middleware/validationRules.js";
+import { validate } from "../middleware/validationCheck.js";
 
 const router = express.Router();
 

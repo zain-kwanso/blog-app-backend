@@ -6,7 +6,7 @@ import Post from "../models/post.js";
 import Comment from "../models/comment.js";
 
 // Helper function to find the post by ID
-const findPostByIdService = async (postId) => {
+const findPostById = async (postId) => {
   return await Post.findOne({
     where: {
       id: postId,
@@ -18,7 +18,7 @@ const findPostByIdService = async (postId) => {
 const isUserAuthorized = (post, userId) => post.UserId === userId;
 
 // Helper function to delete comments associated with the post
-const deleteCommentsByPostIdService = async (postId) => {
+const deleteCommentsByPostId = async (postId) => {
   return await Comment.destroy({
     where: {
       PostId: postId,
@@ -27,7 +27,7 @@ const deleteCommentsByPostIdService = async (postId) => {
 };
 
 // Helper function to construct next page URL
-const constructNextPageUrlService = (req, nextPage, limit) =>
+const constructNextPageUrl = (req, nextPage, limit) =>
   nextPage
     ? `${req.protocol}://${req.get("host")}${
         req.baseUrl
@@ -81,33 +81,33 @@ const fetchPostsWithPaginationAndSearch = async (
 };
 
 // Create a new post
-const createPostService = async (userId, postData) => {
+const createPost = async (userId, postData) => {
   return await Post.create({ UserId: userId, ...postData });
 };
 
 // Get a post by ID
-const getPostService = async (postId) => {
+const getPost = async (postId) => {
   return await Post.findByPk(postId);
 };
 
 // Update a post
-const updatePostService = async (post, updatedData) => {
+const updatePost = async (post, updatedData) => {
   return await post.update(updatedData);
 };
 
 // Delete a post
-const deletePostService = async (post) => {
+const deletePost = async (post) => {
   return await post.destroy();
 };
 
 export {
-  findPostByIdService,
+  findPostById,
   isUserAuthorized,
-  deleteCommentsByPostIdService,
+  deleteCommentsByPostId,
   fetchPostsWithPaginationAndSearch,
-  createPostService,
-  getPostService,
-  updatePostService,
-  deletePostService,
-  constructNextPageUrlService,
+  createPost,
+  getPost,
+  updatePost,
+  deletePost,
+  constructNextPageUrl,
 };

@@ -1,7 +1,7 @@
 import Comment from "../models/comment.js";
 
 // Helper function to find the comment by ID
-const findCommentService = async (commentId) =>
+const findComment = async (commentId) =>
   await Comment.findOne({
     where: {
       id: commentId,
@@ -13,7 +13,7 @@ const isAuthorized = (commentUserID, currentUserID) =>
   commentUserID == currentUserID;
 
 // Helper function to delete comment
-const deleteCommentService = async (commentId) => {
+const deleteComment = async (commentId) => {
   await Comment.destroy({
     where: {
       id: commentId,
@@ -22,39 +22,42 @@ const deleteCommentService = async (commentId) => {
 };
 
 // Create a new comment
-const createCommentService = async (userId, commentData) => {
-  const { ParentId, PostId } = commentData;
+const createComment = async (userId, commentData) => {
+  const { ParentId, PostId, content } = commentData;
   if (!ParentId)
     return await Comment.create({
       UserId: userId,
-      ...commentData,
+      PostId: PostId,
+      content: content,
     });
   const comment = await Comment.findByPk(ParentId);
   if (comment.PostId == PostId) {
     return await Comment.create({
       UserId: userId,
-      ...commentData,
+      ParentId: ParentId,
+      PostId: PostId,
+      content: content,
     });
   }
   return null;
 };
 
 // Get a comment by ID
-const getCommentService = async (commentId) => {
+const getComment = async (commentId) => {
   return await Comment.findByPk(commentId);
 };
 
 // Update a comment
-const updateCommentService = async (comment, content) => {
+const updateComment = async (comment, content) => {
   comment.content = content;
   return await comment.save();
 };
 
 export {
-  findCommentService,
+  findComment,
   isAuthorized,
-  deleteCommentService,
-  createCommentService,
-  getCommentService,
-  updateCommentService,
+  deleteComment,
+  createComment,
+  getComment,
+  updateComment,
 };

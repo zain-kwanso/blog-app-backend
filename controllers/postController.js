@@ -1,17 +1,17 @@
 import { StatusCodes } from "http-status-codes";
 import {
-  findPostByIdService,
+  findPostById as findPostByIdService,
   isUserAuthorized,
   fetchPostsWithPaginationAndSearch,
-  createPostService,
-  getPostService,
-  updatePostService,
-  deletePostService,
-  deleteCommentsByPostIdService,
-  constructNextPageUrlService,
+  createPost as createPostService,
+  getPost as getPostService,
+  updatePost as updatePostService,
+  deletePost as deletePostService,
+  deleteCommentsByPostId as deleteCommentsByPostIdService,
+  constructNextPageUrl as constructNextPageUrlService,
 } from "../services/postService.js";
 
-const createPostController = async (req, res) => {
+const createPost = async (req, res) => {
   try {
     const post = await createPostService(req.user.id, req.body);
     return res.status(StatusCodes.CREATED).json(post);
@@ -23,7 +23,7 @@ const createPostController = async (req, res) => {
   }
 };
 
-const getPostController = async (req, res) => {
+const getPost = async (req, res) => {
   try {
     const post = await getPostService(req.params.id);
     if (post) {
@@ -38,7 +38,7 @@ const getPostController = async (req, res) => {
   }
 };
 
-const getPostsByUserController = async (req, res) => {
+const getPostsByUser = async (req, res) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
@@ -75,7 +75,7 @@ const getPostsByUserController = async (req, res) => {
   }
 };
 
-const getAllPostsController = async (req, res) => {
+const getAllPosts = async (req, res) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
@@ -110,7 +110,7 @@ const getAllPostsController = async (req, res) => {
   }
 };
 
-const deletePostController = async (req, res) => {
+const deletePost = async (req, res) => {
   try {
     const postId = req.params.id;
     const userId = req.user.id;
@@ -143,7 +143,7 @@ const deletePostController = async (req, res) => {
   }
 };
 
-const updatePostController = async (req, res) => {
+const updatePost = async (req, res) => {
   try {
     const postId = req.params.id;
     const userId = req.user.id;
@@ -177,10 +177,10 @@ const updatePostController = async (req, res) => {
 };
 
 export {
-  createPostController as createPost,
-  getPostController as getPost,
-  getPostsByUserController as getPostsByUser,
-  getAllPostsController as getAllPosts,
-  deletePostController as deletePost,
-  updatePostController as updatePost,
+  createPost,
+  getPost,
+  getPostsByUser,
+  getAllPosts,
+  deletePost,
+  updatePost,
 };

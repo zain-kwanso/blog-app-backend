@@ -5,8 +5,12 @@ import bcrypt from "bcrypt";
 
 const SECRET_KEY = process.env.JWT_SECRET || "VerySecret";
 // Signin service
-const signinService = async (email, password) => {
-  const user = await User.findOne({ where: { email: email } });
+const signin = async (email, password) => {
+  const user = await User.scope("withPassword").findOne({
+    where: {
+      email: email,
+    },
+  });
 
   if (!user) {
     return null;
@@ -22,8 +26,8 @@ const signinService = async (email, password) => {
 };
 
 // Signup service
-const signupService = async (userData) => {
-  const { email, password } = userData;
+const signup = async (userData) => {
+  const { email, password, name } = userData;
 
   const existingUser = await User.findOne({ where: { email } });
   if (existingUser) {
@@ -31,10 +35,14 @@ const signupService = async (userData) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = await User.create({ ...userData, password: hashedPassword });
+  const newUser = await User.create({
+    email: email,
+    name: name,
+    password: hashedPassword,
+  });
   const token = jwt.sign({ id: newUser.id, email: newUser.email }, SECRET_KEY);
 
   return token;
 };
 
-export { signinService, signupService };
+export { signin, signup };
