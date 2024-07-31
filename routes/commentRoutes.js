@@ -6,34 +6,33 @@ import {
 } from "../controllers/commentController.js";
 import { authenticateToken } from "../middleware/auth.js";
 import {
-  validate,
   commentUpdateRules,
   commentCreationRules,
   commentDeleteRules,
 } from "../middleware/commentValidators.js";
+import { validate } from "../middleware/validationRules.js";
 
 const router = express.Router();
 
 router.post(
   "/create",
   authenticateToken,
-  commentCreationRules,
-  validate,
+  validate(commentCreationRules),
   createComment
 );
 
 router.delete(
   "/:id",
   authenticateToken,
-  commentDeleteRules,
-  validate,
+
+  validate(commentDeleteRules),
   deleteComment
 );
 router.put(
   "/:id",
   authenticateToken,
-  commentUpdateRules,
-  validate,
+
+  validate(commentUpdateRules),
   updateComment
 );
 

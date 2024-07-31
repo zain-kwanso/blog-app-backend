@@ -3,12 +3,12 @@ import { signin, signup } from "../controllers/authController.js";
 import {
   userValidationRules,
   loginValidationRules,
-  validate,
 } from "../middleware/userValidators.js";
+import { validate } from "../middleware/validationRules.js";
 
 const router = express.Router();
 
-router.post("/signin", loginValidationRules, validate, signin);
-router.post("/signup", userValidationRules, validate, signup);
+router.post("/signin", validate(loginValidationRules), signin);
+router.post("/signup", validate(userValidationRules), signup);
 
 export default router;

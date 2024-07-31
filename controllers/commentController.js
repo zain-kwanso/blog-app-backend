@@ -6,8 +6,7 @@ import {
   getCommentService,
   updateCommentService,
 } from "../services/commentService.js";
-import { statusCodes } from "../constants/statusCodes.js";
-import { error } from "console";
+import { StatusCodes } from "http-status-codes";
 
 const createCommentController = async (req, res) => {
   try {
@@ -15,12 +14,15 @@ const createCommentController = async (req, res) => {
     if (!comment) {
       console.log(comment);
       return res
-        .status(statusCodes.BAD_REQUEST)
+        .status(StatusCodes.BAD_REQUEST)
         .json({ error: "PostId not valid" });
     }
-    return res.status(statusCodes.CREATED).json(comment);
+    return res.status(StatusCodes.CREATED).json(comment);
   } catch (error) {
-    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
+    console.log(error.message);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 
@@ -28,14 +30,17 @@ const getCommentController = async (req, res) => {
   try {
     const comment = await getCommentService(req.params.id);
     if (comment) {
-      return res.status(statusCodes.SUCCESS).json(comment);
+      return res.status(StatusCodes.OK).json(comment);
     } else {
       return res
-        .status(statusCodes.NOT_FOUND)
+        .status(StatusCodes.NOT_FOUND)
         .json({ error: "Comment not found" });
     }
   } catch (error) {
-    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
+    console.log(error.message);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 
@@ -48,23 +53,26 @@ const deleteCommentController = async (req, res) => {
 
     if (!comment) {
       return res
-        .status(statusCodes.NOT_FOUND)
+        .status(StatusCodes.NOT_FOUND)
         .json({ error: "Comment not found" });
     }
 
     if (!isAuthorized(comment.UserId, userId)) {
       return res
-        .status(statusCodes.FORBIDDEN)
+        .status(StatusCodes.FORBIDDEN)
         .json({ error: "Not authorized to delete this comment" });
     }
 
     await deleteCommentService(commentId);
 
     return res
-      .status(statusCodes.SUCCESS)
+      .status(StatusCodes.OK)
       .json({ message: `Comment deleted successfully` });
   } catch (error) {
-    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
+    console.log(error.message);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 
@@ -78,23 +86,26 @@ const updateCommentController = async (req, res) => {
 
     if (!comment) {
       return res
-        .status(statusCodes.NOT_FOUND)
+        .status(StatusCodes.NOT_FOUND)
         .json({ error: "Comment not found" });
     }
 
     if (!isAuthorized(comment.UserId, userId)) {
       return res
-        .status(statusCodes.FORBIDDEN)
+        .status(StatusCodes.FORBIDDEN)
         .json({ error: "Not authorized to update this comment" });
     }
 
     await updateCommentService(comment, content);
 
     return res
-      .status(statusCodes.SUCCESS)
+      .status(StatusCodes.OK)
       .json({ message: `Comment updated successfully` });
   } catch (error) {
-    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
+    console.log(error.message);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 

@@ -1,4 +1,4 @@
-import { statusCodes } from "../constants/statusCodes.js";
+import { StatusCodes } from "http-status-codes";
 import {
   findPostByIdService,
   isUserAuthorized,
@@ -14,9 +14,12 @@ import {
 const createPostController = async (req, res) => {
   try {
     const post = await createPostService(req.user.id, req.body);
-    return res.status(statusCodes.CREATED).json(post);
+    return res.status(StatusCodes.CREATED).json(post);
   } catch (error) {
-    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
+    console.log(error.message);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 
@@ -24,11 +27,14 @@ const getPostController = async (req, res) => {
   try {
     const post = await getPostService(req.params.id);
     if (post) {
-      return res.status(statusCodes.SUCCESS).json(post);
+      return res.status(StatusCodes.OK).json(post);
     }
-    return res.status(statusCodes.NOT_FOUND).json({ error: "Post not found" });
+    return res.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
   } catch (error) {
-    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
+    console.log(error.message);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 
@@ -47,13 +53,13 @@ const getPostsByUserController = async (req, res) => {
 
     if (posts.length === 0) {
       return res
-        .status(statusCodes.NOT_FOUND)
+        .status(StatusCodes.NOT_FOUND)
         .json({ error: "Post not found" });
     }
 
     const nextPageUrl = constructNextPageUrlService(req, nextPage, limit);
 
-    return res.status(statusCodes.SUCCESS).json({
+    return res.status(StatusCodes.OK).json({
       posts,
       pagination: {
         currentPage: page,
@@ -62,7 +68,10 @@ const getPostsByUserController = async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
+    console.log(error.message);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 
@@ -80,12 +89,12 @@ const getAllPostsController = async (req, res) => {
 
     if (posts.length === 0) {
       return res
-        .status(statusCodes.NOT_FOUND)
+        .status(StatusCodes.NOT_FOUND)
         .json({ error: "No posts found" });
     }
     const nextPageUrl = constructNextPageUrlService(req, nextPage, limit);
 
-    return res.status(statusCodes.SUCCESS).json({
+    return res.status(StatusCodes.OK).json({
       posts,
       pagination: {
         currentPage: page,
@@ -94,7 +103,10 @@ const getAllPostsController = async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
+    console.log(error.message);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 
@@ -107,13 +119,13 @@ const deletePostController = async (req, res) => {
 
     if (!post) {
       return res
-        .status(statusCodes.NOT_FOUND)
+        .status(StatusCodes.NOT_FOUND)
         .json({ error: "Post not found" });
     }
 
     if (!isUserAuthorized(post, userId)) {
       return res
-        .status(statusCodes.FORBIDDEN)
+        .status(StatusCodes.FORBIDDEN)
         .json({ error: "Not authorized to delete this Post" });
     }
 
@@ -121,10 +133,13 @@ const deletePostController = async (req, res) => {
     await deletePostService(post);
 
     return res
-      .status(statusCodes.SUCCESS)
+      .status(StatusCodes.OK)
       .json({ message: `Post deleted successfully` });
   } catch (error) {
-    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
+    console.log(error.message);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 
@@ -138,23 +153,26 @@ const updatePostController = async (req, res) => {
 
     if (!post) {
       return res
-        .status(statusCodes.NOT_FOUND)
+        .status(StatusCodes.NOT_FOUND)
         .json({ error: "Post not found" });
     }
 
     if (!isUserAuthorized(post, userId)) {
       return res
-        .status(statusCodes.FORBIDDEN)
+        .status(StatusCodes.FORBIDDEN)
         .json({ error: "Not authorized to delete this post" });
     }
 
     await updatePostService(post, { title, content });
 
     return res
-      .status(statusCodes.SUCCESS)
+      .status(StatusCodes.OK)
       .json({ message: `Post updated successfully` });
   } catch (error) {
-    return res.status(statusCodes.BAD_REQUEST).json({ error: error.message });
+    console.log(error.message);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 

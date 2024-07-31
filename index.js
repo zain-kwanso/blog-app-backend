@@ -3,7 +3,6 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import db from "./models/index.js";
 import routes from "./routes/index.js";
-import sequelize from "./sequelize/config.js";
 try {
   dotenv.config();
 
@@ -17,7 +16,7 @@ try {
 
   const dbSync = async () => {
     try {
-      await db.sequelize.sync();
+      // await sequelize.sync();
       app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
       });

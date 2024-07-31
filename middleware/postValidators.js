@@ -23,12 +23,4 @@ const postUpdateRules = [
   body("content").notEmpty().withMessage("Content cannot be empty"),
 ];
 
-const validate = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(statusCodes.BAD_REQUEST).json({ errors: errors.array() });
-  }
-  next();
-};
-
-export { postDeleteRules, postCreationRules, postUpdateRules, validate };
+export { postDeleteRules, postCreationRules, postUpdateRules };

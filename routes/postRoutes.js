@@ -11,8 +11,8 @@ import {
   postCreationRules,
   postDeleteRules,
   postUpdateRules,
-  validate,
 } from "../middleware/postValidators.js";
+import { validate } from "../middleware/validationRules.js";
 
 const router = express.Router();
 
@@ -25,7 +25,7 @@ router.post(
 );
 router.get("/", authenticateToken, getAllPosts);
 router.get("/user", authenticateToken, getPostsByUser);
-router.delete("/:id", authenticateToken, postDeleteRules, validate, deletePost);
-router.put("/:id", authenticateToken, postUpdateRules, validate, updatePost);
+router.delete("/:id", authenticateToken, validate(postDeleteRules), deletePost);
+router.put("/:id", authenticateToken, validate(postUpdateRules), updatePost);
 
 export default router;
