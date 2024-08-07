@@ -1,4 +1,4 @@
-import { body, validationResult } from "express-validator";
+import { body, param, validationResult } from "express-validator";
 import { statusCodes } from "../constants/statusCodes.js";
 const userValidationRules = [
   body("name").notEmpty().withMessage("Name is required"),
@@ -13,4 +13,8 @@ const loginValidationRules = [
   body("password").notEmpty().withMessage("Password is required"),
 ];
 
-export { userValidationRules, loginValidationRules };
+const userGetValidationRules = [
+  param("id").isInt().withMessage("Valid id is required"),
+];
+
+export { userValidationRules, loginValidationRules, userGetValidationRules };

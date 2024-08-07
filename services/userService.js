@@ -21,7 +21,7 @@ const signin = async (email, password) => {
     return null;
   }
 
-  const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY);
+  const token = jwt.sign({ id: user.id, name: user.name }, SECRET_KEY);
   return token;
 };
 
@@ -34,15 +34,25 @@ const signup = async (userData) => {
     return null;
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  // const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = await User.create({
     email: email,
     name: name,
-    password: hashedPassword,
+    password: password,
   });
-  const token = jwt.sign({ id: newUser.id, email: newUser.email }, SECRET_KEY);
+  const token = jwt.sign({ id: newUser.id, name: newUser.name }, SECRET_KEY);
 
   return token;
 };
 
-export { signin, signup };
+// get user name service
+const getUserNameById = async (id) => {
+  const user = await User.findByPk(id);
+  if (user) {
+    return user.name;
+  } else {
+    return null;
+  }
+};
+
+export { signin, signup, getUserNameById };

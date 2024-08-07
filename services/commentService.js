@@ -23,6 +23,7 @@ const deleteComment = async (commentId) => {
 
 // Create a new comment
 const createComment = async (userId, commentData) => {
+  console.log(userId);
   const { ParentId, PostId, content } = commentData;
   if (!ParentId)
     return await Comment.create({

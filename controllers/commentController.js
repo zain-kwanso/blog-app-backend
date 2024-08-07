@@ -10,6 +10,7 @@ import { StatusCodes } from "http-status-codes";
 
 const createComment = async (req, res) => {
   try {
+    console.log(req.user);
     const comment = await createCommentService(req.user.id, req.body);
     if (!comment) {
       console.log(comment);

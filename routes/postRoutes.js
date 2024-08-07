@@ -19,8 +19,7 @@ const router = express.Router();
 router.post(
   "/create",
   authenticateToken,
-  postCreationRules,
-  validate,
+  validate(postCreationRules),
   createPost
 );
 router.get("/", authenticateToken, getAllPosts);

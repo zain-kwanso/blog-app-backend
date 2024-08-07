@@ -13,6 +13,7 @@ import {
 
 const createPost = async (req, res) => {
   try {
+    console.log(req.user);
     const post = await createPostService(req.user.id, req.body);
     return res.status(StatusCodes.CREATED).json(post);
   } catch (error) {
@@ -52,9 +53,7 @@ const getPostsByUser = async (req, res) => {
     } = await fetchPostsWithPaginationAndSearch(page, limit, search, userId);
 
     if (posts.length === 0) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ error: "Post not found" });
+      return res.status(StatusCodes.OK).json({ posts });
     }
 
     const nextPageUrl = constructNextPageUrlService(req, nextPage, limit);
