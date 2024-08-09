@@ -30,8 +30,16 @@ const deleteCommentsByPostId = async (postId) => {
 const constructNextPageUrl = (req, nextPage, limit) =>
   nextPage
     ? `${req.protocol}://${req.get("host")}${
-        req.baseUrl
+        req.originalUrl.split("?")[0]
       }?page=${nextPage}&limit=${limit}&search=${req.query.search || ""}`
+    : null;
+
+// Helper function to construct next page URL
+const constructPreviousPageUrl = (req, previousPage, limit) =>
+  previousPage
+    ? `${req.protocol}://${req.get("host")}${
+        req.originalUrl.split("?")[0]
+      }?page=${previousPage}&limit=${limit}&search=${req.query.search || ""}`
     : null;
 
 // Helper function to fetch posts with pagination and search
@@ -75,9 +83,10 @@ const fetchPostsWithPaginationAndSearch = async (
     offset,
   });
 
-  const totalPages = Math.ceil((count - 1) / limit);
+  const totalPages = Math.ceil(count / limit);
   const nextPage = page < totalPages ? page + 1 : null;
-  return { rows, totalPages, nextPage };
+  const previousPage = page > 1 ? page - 1 : null;
+  return { rows, totalPages, nextPage, previousPage };
 };
 
 // Create a new post
@@ -110,4 +119,5 @@ export {
   updatePost,
   deletePost,
   constructNextPageUrl,
+  constructPreviousPageUrl,
 };

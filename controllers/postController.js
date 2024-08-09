@@ -9,6 +9,7 @@ import {
   deletePost as deletePostService,
   deleteCommentsByPostId as deleteCommentsByPostIdService,
   constructNextPageUrl as constructNextPageUrlService,
+  constructPreviousPageUrl as constructPreviousPageUrlService,
 } from "../services/postService.js";
 
 const createPost = async (req, res) => {
@@ -42,7 +43,7 @@ const getPost = async (req, res) => {
 const getPostsByUser = async (req, res) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 10;
+    const limit = parseInt(req.query.limit, 10) || 9;
     const search = req.query.search || "";
     const userId = req.user ? req.user.id : null;
 
@@ -50,6 +51,7 @@ const getPostsByUser = async (req, res) => {
       rows: posts,
       totalPages,
       nextPage,
+      previousPage,
     } = await fetchPostsWithPaginationAndSearch(page, limit, search, userId);
 
     if (posts.length === 0) {
@@ -57,6 +59,11 @@ const getPostsByUser = async (req, res) => {
     }
 
     const nextPageUrl = constructNextPageUrlService(req, nextPage, limit);
+    const previousPageUrl = constructPreviousPageUrlService(
+      req,
+      previousPage,
+      limit
+    );
 
     return res.status(StatusCodes.OK).json({
       posts,
@@ -64,6 +71,7 @@ const getPostsByUser = async (req, res) => {
         currentPage: page,
         totalPages,
         nextPageUrl,
+        previousPageUrl,
       },
     });
   } catch (error) {
@@ -77,13 +85,14 @@ const getPostsByUser = async (req, res) => {
 const getAllPosts = async (req, res) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 10;
+    const limit = parseInt(req.query.limit, 10) || 9;
     const search = req.query.search || "";
 
     const {
       rows: posts,
       totalPages,
       nextPage,
+      previousPage,
     } = await fetchPostsWithPaginationAndSearch(page, limit, search);
 
     if (posts.length === 0) {
@@ -92,6 +101,11 @@ const getAllPosts = async (req, res) => {
         .json({ error: "No posts found" });
     }
     const nextPageUrl = constructNextPageUrlService(req, nextPage, limit);
+    const previousPageUrl = constructPreviousPageUrlService(
+      req,
+      previousPage,
+      limit
+    );
 
     return res.status(StatusCodes.OK).json({
       posts,
@@ -99,6 +113,7 @@ const getAllPosts = async (req, res) => {
         currentPage: page,
         totalPages,
         nextPageUrl,
+        previousPageUrl,
       },
     });
   } catch (error) {
