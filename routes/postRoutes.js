@@ -22,7 +22,7 @@ router.post(
   validate(postCreationRules),
   createPost
 );
-router.get("/", authenticateToken, getAllPosts);
+router.get("/", getAllPosts);
 router.get("/user", authenticateToken, getPostsByUser);
 router.delete("/:id", authenticateToken, validate(postDeleteRules), deletePost);
 router.put("/:id", authenticateToken, validate(postUpdateRules), updatePost);

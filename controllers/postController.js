@@ -57,7 +57,7 @@ const getPostsByUser = async (req, res) => {
     if (posts.length === 0) {
       return res.status(StatusCodes.OK).json({ posts });
     }
-
+    console.log(req.protocol);
     const nextPageUrl = constructNextPageUrlService(req, nextPage, limit);
     const previousPageUrl = constructPreviousPageUrlService(
       req,
@@ -100,6 +100,7 @@ const getAllPosts = async (req, res) => {
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "No posts found" });
     }
+    console.log(req.protocol);
     const nextPageUrl = constructNextPageUrlService(req, nextPage, limit);
     const previousPageUrl = constructPreviousPageUrlService(
       req,
