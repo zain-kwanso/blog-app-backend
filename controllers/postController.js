@@ -46,7 +46,7 @@ const getPostsByUser = async (req, res) => {
     const limit = parseInt(req.query.limit, 10) || 9;
     const search = req.query.search || "";
     const userId = req.user ? req.user.id : null;
-
+    console.log("controller userId: ", req.user);
     const {
       rows: posts,
       totalPages,
@@ -100,7 +100,7 @@ const getAllPosts = async (req, res) => {
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "No posts found" });
     }
-    console.log(req.protocol);
+    // console.log(req.protocol);
     const nextPageUrl = constructNextPageUrlService(req, nextPage, limit);
     const previousPageUrl = constructPreviousPageUrlService(
       req,

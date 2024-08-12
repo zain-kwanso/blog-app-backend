@@ -3,6 +3,7 @@ import {
   createPost,
   getAllPosts,
   getPostsByUser,
+  getPost,
   deletePost,
   updatePost,
 } from "../controllers/postController.js";
@@ -22,8 +23,10 @@ router.post(
   validate(postCreationRules),
   createPost
 );
+
 router.get("/", getAllPosts);
 router.get("/user", authenticateToken, getPostsByUser);
+router.get("/:id", getPost);
 router.delete("/:id", authenticateToken, validate(postDeleteRules), deletePost);
 router.put("/:id", authenticateToken, validate(postUpdateRules), updatePost);
 

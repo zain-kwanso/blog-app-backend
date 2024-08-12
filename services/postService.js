@@ -4,6 +4,7 @@ import { Sequelize } from "sequelize";
 
 import Post from "../models/post.js";
 import Comment from "../models/comment.js";
+import User from "../models/user.js";
 
 // Helper function to find the post by ID
 const findPostById = async (postId) => {
@@ -60,24 +61,17 @@ const fetchPostsWithPaginationAndSearch = async (
     : {};
 
   const userCondition = userId ? { UserId: userId } : {};
-
   const whereCondition = { ...searchCondition, ...userCondition };
   const { count, rows } = await Post.findAndCountAll({
     where: whereCondition,
-    include: {
-      model: Comment,
-      where: { ParentId: null },
-      required: false,
-      include: {
-        model: Comment,
-        as: "replies",
-        required: false,
-        include: {
-          model: Comment,
-          as: "replies",
-          required: false,
-        },
+    include: [
+      {
+        model: User,
+        attributes: [],
       },
+    ],
+    attributes: {
+      include: [[Sequelize.col("User.name"), "authorName"]],
     },
     limit,
     offset,
@@ -96,7 +90,22 @@ const createPost = async (userId, postData) => {
 
 // Get a post by ID
 const getPost = async (postId) => {
-  return await Post.findByPk(postId);
+  return await Post.findByPk(postId, {
+    include: [
+      {
+        model: Comment,
+        where: { ParentId: null },
+        required: false,
+        include: [
+          {
+            model: Comment,
+            as: "replies",
+            required: false,
+          },
+        ],
+      },
+    ],
+  });
 };
 
 // Update a post

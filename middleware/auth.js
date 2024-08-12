@@ -9,7 +9,6 @@ const SECRET_KEY = process.env.JWT_SECRET || "VerySecret";
 export const authenticateToken = (req, res, next) => {
   const header = req.headers["authorization"];
   const token = header && header.split(" ")[1];
-
   if (!token) {
     return res
       .status(statusCodes.UNAUTHORIZED)
