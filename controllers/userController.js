@@ -21,10 +21,10 @@ const getUser = async (req, res) => {
   try {
     const user = req.user;
     if (user) {
-      return res.status(StatusCodes.OK).json({ user });
+      return res.status(200).json({ user });
     }
 
-    return res.status(StatusCodes.OK).json({ user: "undefined" });
+    return res.status(StatusCodes.NOT_FOUND).json({ user: null });
   } catch (error) {
     console.log(error.message);
     return res

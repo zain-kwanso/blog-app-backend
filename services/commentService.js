@@ -44,8 +44,30 @@ const createComment = async (userId, commentData) => {
 };
 
 // Get a comment by ID
-const getComment = async (commentId) => {
-  return await Comment.findByPk(commentId);
+const getComment = async (postId) => {
+  return await await Comment.findAll({
+    where: {
+      PostId: postId,
+      ParentId: null,
+    },
+    include: [
+      {
+        model: Comment,
+        as: "replies",
+        required: false,
+        include: [
+          {
+            model: User,
+            attributes: ["name"],
+          },
+        ],
+      },
+      {
+        model: User,
+        attributes: ["name"],
+      },
+    ],
+  });
 };
 
 // Update a comment

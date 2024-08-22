@@ -29,9 +29,9 @@ const createComment = async (req, res) => {
 
 const getComment = async (req, res) => {
   try {
-    const comment = await getCommentService(req.params.id);
-    if (comment) {
-      return res.status(StatusCodes.OK).json(comment);
+    const comments = await getCommentService(req.params.id);
+    if (comments) {
+      return res.status(StatusCodes.OK).json(comments);
     } else {
       return res
         .status(StatusCodes.NOT_FOUND)

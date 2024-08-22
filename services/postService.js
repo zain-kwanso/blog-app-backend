@@ -73,6 +73,7 @@ const fetchPostsWithPaginationAndSearch = async (
     attributes: {
       include: [[Sequelize.col("User.name"), "authorName"]],
     },
+    order: [["createdAt", "DESC"]],
     limit,
     offset,
   });
@@ -88,24 +89,36 @@ const createPost = async (userId, postData) => {
   return await Post.create({ UserId: userId, ...postData });
 };
 
-// Get a post by ID
-const getPost = async (postId) => {
-  return await Post.findByPk(postId, {
+// Get a post comments by ID
+const getPostComments = async (postId) => {
+  return await Comment.findAll({
+    where: {
+      PostId: postId,
+      ParentId: null,
+    },
     include: [
       {
         model: Comment,
-        where: { ParentId: null },
+        as: "replies",
         required: false,
         include: [
           {
-            model: Comment,
-            as: "replies",
-            required: false,
+            model: User,
+            attributes: ["name"],
           },
         ],
       },
+      {
+        model: User,
+        attributes: ["name"],
+      },
     ],
   });
+};
+
+// Get a post by ID
+const getPost = async (postId) => {
+  return await Post.findByPk(postId);
 };
 
 // Update a post
@@ -125,6 +138,7 @@ export {
   fetchPostsWithPaginationAndSearch,
   createPost,
   getPost,
+  getPostComments,
   updatePost,
   deletePost,
   constructNextPageUrl,

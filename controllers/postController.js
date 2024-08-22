@@ -5,6 +5,7 @@ import {
   fetchPostsWithPaginationAndSearch,
   createPost as createPostService,
   getPost as getPostService,
+  getPostComments as getPostCommentsService,
   updatePost as updatePostService,
   deletePost as deletePostService,
   deleteCommentsByPostId as deleteCommentsByPostIdService,
@@ -27,9 +28,28 @@ const createPost = async (req, res) => {
 
 const getPost = async (req, res) => {
   try {
-    const post = await getPostService(req.params.id);
+    const id = req.params.id;
+
+    const post = await getPostService(id);
+
     if (post) {
       return res.status(StatusCodes.OK).json(post);
+    }
+    return res.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
+  } catch (error) {
+    console.log(error.message);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Something Went Wrong Please Try Again Later" });
+  }
+};
+
+const getPostComments = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const comments = await getPostCommentsService(id);
+    if (comments) {
+      return res.status(StatusCodes.OK).json(comments);
     }
     return res.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
   } catch (error) {
@@ -198,4 +218,5 @@ export {
   getAllPosts,
   deletePost,
   updatePost,
+  getPostComments,
 };

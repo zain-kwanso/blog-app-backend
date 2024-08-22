@@ -5,6 +5,7 @@ import {
   getPostsByUser,
   getPost,
   deletePost,
+  getPostComments,
   updatePost,
 } from "../controllers/postController.js";
 import { authenticateToken } from "../middleware/auth.js";
@@ -26,7 +27,9 @@ router.post(
 
 router.get("/", getAllPosts);
 router.get("/user", authenticateToken, getPostsByUser);
+router.get("/:id/comments", getPostComments);
 router.get("/:id", getPost);
+
 router.delete("/:id", authenticateToken, validate(postDeleteRules), deletePost);
 router.put("/:id", authenticateToken, validate(postUpdateRules), updatePost);
 
