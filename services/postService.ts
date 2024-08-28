@@ -1,13 +1,12 @@
-// postService.js
+// postService.ts
 
-import { Sequelize } from "sequelize";
-
-import Post from "../models/post.js";
-import Comment from "../models/comment.js";
-import User from "../models/user.js";
+import { Sequelize, Op } from "sequelize";
+import { Request } from "express";
+import db from "../models/index.ts"; // Adjust the import path as necessary
+const { User, Post, Comment } = db; // Assuming named exports from models
 
 // Helper function to find the post by ID
-const findPostById = async (postId) => {
+const findPostById = async (postId: number): Promise<typeof Post | null> => {
   return await Post.findOne({
     where: {
       id: postId,
@@ -16,10 +15,13 @@ const findPostById = async (postId) => {
 };
 
 // Helper function to check if the user is authorized to delete the post
-const isUserAuthorized = (post, userId) => post.UserId === userId;
+const isUserAuthorized = (post: typeof Post, userId: number): boolean =>
+  post?.UserId === userId;
 
 // Helper function to delete comments associated with the post
-const deleteCommentsByPostId = async (postId) => {
+const deleteCommentsByPostId = async (
+  postId: number
+): Promise<number | null> => {
   return await Comment.destroy({
     where: {
       PostId: postId,
@@ -28,15 +30,23 @@ const deleteCommentsByPostId = async (postId) => {
 };
 
 // Helper function to construct next page URL
-const constructNextPageUrl = (req, nextPage, limit) =>
+const constructNextPageUrl = (
+  req: Request,
+  nextPage: number | null,
+  limit: number
+): string | null =>
   nextPage
     ? `${req.protocol}://${req.get("host")}${
         req.originalUrl.split("?")[0]
       }?page=${nextPage}&limit=${limit}&search=${req.query.search || ""}`
     : null;
 
-// Helper function to construct next page URL
-const constructPreviousPageUrl = (req, previousPage, limit) =>
+// Helper function to construct previous page URL
+const constructPreviousPageUrl = (
+  req: Request,
+  previousPage: number | null,
+  limit: number
+): string | null =>
   previousPage
     ? `${req.protocol}://${req.get("host")}${
         req.originalUrl.split("?")[0]
@@ -45,23 +55,24 @@ const constructPreviousPageUrl = (req, previousPage, limit) =>
 
 // Helper function to fetch posts with pagination and search
 const fetchPostsWithPaginationAndSearch = async (
-  page = 1,
-  limit = 10,
-  search,
-  userId
+  page: number = 1,
+  limit: number = 10,
+  search: string = "",
+  userId: number | null = null
 ) => {
   const offset = (page - 1) * limit;
   const searchCondition = search
     ? {
-        [Sequelize.Op.or]: [
-          { title: { [Sequelize.Op.iLike]: `%${search}%` } },
-          { content: { [Sequelize.Op.iLike]: `%${search}%` } },
+        [Op.or]: [
+          { title: { [Op.iLike]: `%${search}%` } },
+          { content: { [Op.iLike]: `%${search}%` } },
         ],
       }
     : {};
 
   const userCondition = userId ? { UserId: userId } : {};
   const whereCondition = { ...searchCondition, ...userCondition };
+
   const { count, rows } = await Post.findAndCountAll({
     where: whereCondition,
     include: [
@@ -81,16 +92,20 @@ const fetchPostsWithPaginationAndSearch = async (
   const totalPages = Math.ceil(count / limit);
   const nextPage = page < totalPages ? page + 1 : null;
   const previousPage = page > 1 ? page - 1 : null;
+
   return { rows, totalPages, nextPage, previousPage };
 };
 
 // Create a new post
-const createPost = async (userId, postData) => {
+const createPost = async (
+  userId: number,
+  postData: Partial<typeof Post>
+): Promise<typeof Post> => {
   return await Post.create({ UserId: userId, ...postData });
 };
 
-// Get a post comments by ID
-const getPostComments = async (postId) => {
+// Get a post's comments by ID
+const getPostComments = async (postId: number): Promise<typeof Comment> => {
   return await Comment.findAll({
     where: {
       PostId: postId,
@@ -117,18 +132,21 @@ const getPostComments = async (postId) => {
 };
 
 // Get a post by ID
-const getPost = async (postId) => {
+const getPost = async (postId: number): Promise<typeof Post> => {
   return await Post.findByPk(postId);
 };
 
 // Update a post
-const updatePost = async (post, updatedData) => {
+const updatePost = async (
+  post: typeof Post,
+  updatedData: Partial<typeof Post>
+) => {
   return await post.update(updatedData);
 };
 
 // Delete a post
-const deletePost = async (post) => {
-  return await post.destroy();
+const deletePost = async (post: typeof Post) => {
+  await post.destroy();
 };
 
 export {

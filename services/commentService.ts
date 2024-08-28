@@ -1,7 +1,8 @@
-import Comment from "../models/comment.js";
+import Comment from "../models/comment.ts";
+import User from "../models/user.ts";
 
 // Helper function to find the comment by ID
-const findComment = async (commentId) =>
+const findComment = async (commentId: number): Promise<typeof Comment | null> =>
   await Comment.findOne({
     where: {
       id: commentId,
@@ -9,11 +10,11 @@ const findComment = async (commentId) =>
   });
 
 // Helper function to check authorization
-const isAuthorized = (commentUserID, currentUserID) =>
-  commentUserID == currentUserID;
+const isAuthorized = (commentUserID: number, currentUserID: number): boolean =>
+  commentUserID === currentUserID;
 
 // Helper function to delete comment
-const deleteComment = async (commentId) => {
+const deleteComment = async (commentId: number): Promise<void> => {
   await Comment.destroy({
     where: {
       id: commentId,
@@ -22,9 +23,13 @@ const deleteComment = async (commentId) => {
 };
 
 // Create a new comment
-const createComment = async (userId, commentData) => {
+const createComment = async (
+  userId: number,
+  PostId: number,
+  content: string,
+  ParentId?: number
+): Promise<typeof Comment | null> => {
   console.log(userId);
-  const { ParentId, PostId, content } = commentData;
   if (!ParentId)
     return await Comment.create({
       UserId: userId,
@@ -32,7 +37,7 @@ const createComment = async (userId, commentData) => {
       content: content,
     });
   const comment = await Comment.findByPk(ParentId);
-  if (comment.PostId == PostId) {
+  if (comment?.PostId == PostId) {
     return await Comment.create({
       UserId: userId,
       ParentId: ParentId,
@@ -44,8 +49,8 @@ const createComment = async (userId, commentData) => {
 };
 
 // Get a comment by ID
-const getComment = async (postId) => {
-  return await await Comment.findAll({
+const getComment = async (postId: number): Promise<typeof Comment> => {
+  return await Comment.findAll({
     where: {
       PostId: postId,
       ParentId: null,
@@ -71,7 +76,7 @@ const getComment = async (postId) => {
 };
 
 // Update a comment
-const updateComment = async (comment, content) => {
+const updateComment = async (comment: typeof Comment, content: string) => {
   comment.content = content;
   return await comment.save();
 };

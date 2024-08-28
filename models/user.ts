@@ -1,7 +1,9 @@
-import sequelize from "../sequelize/config.js";
+// @ts-ignore
+import sequelize from "../sequelize/config.ts";
 import { DataTypes } from "sequelize";
 import bcrypt from "bcrypt";
 
+// @ts-ignore
 const User = sequelize.define(
   "Users",
   {
@@ -37,10 +39,10 @@ const User = sequelize.define(
       },
     },
     hooks: {
-      beforeCreate: async (user) => {
+      beforeCreate: async (user: typeof User) => {
         user.password = await bcrypt.hash(user.password, 10);
       },
-      beforeUpdate: async (user) => {
+      beforeUpdate: async (user: typeof User) => {
         if (user.changed("password")) {
           user.password = await bcrypt.hash(user.password, 10);
         }
@@ -49,6 +51,7 @@ const User = sequelize.define(
   }
 );
 
+// @ts-ignore
 User.associate = function (models) {
   User.hasMany(models.Post, {
     foreignKey: "UserId",

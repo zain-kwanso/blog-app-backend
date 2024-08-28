@@ -1,25 +1,31 @@
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
-import { statusCodes } from "../constants/statusCodes.js";
+import { Request, Response, NextFunction } from "express";
+import { StatusCodes } from "http-status-codes";
+import { User } from "../@types/module";
 
 dotenv.config();
 
 const SECRET_KEY = process.env.JWT_SECRET || "VerySecret";
 
-export const authenticateToken = (req, res, next) => {
+export const authenticateToken = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const header = req.headers["authorization"];
   const token = header && header.split(" ")[1];
   if (!token) {
     return res
-      .status(statusCodes.UNAUTHORIZED)
+      .status(StatusCodes.UNAUTHORIZED)
       .json({ error: "Token not provided" });
   }
 
   jwt.verify(token, SECRET_KEY, (err, user) => {
     if (err)
-      return res.status(statusCodes.FORBIDDEN).json({ error: "Invalid token" });
+      return res.status(StatusCodes.FORBIDDEN).json({ error: "Invalid token" });
 
-    req.user = user;
+    req.user = user as User;
     next();
   });
 };

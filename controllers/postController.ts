@@ -1,4 +1,5 @@
 import { StatusCodes } from "http-status-codes";
+import { Request, Response } from "express";
 import {
   findPostById as findPostByIdService,
   isUserAuthorized,
@@ -11,24 +12,28 @@ import {
   deleteCommentsByPostId as deleteCommentsByPostIdService,
   constructNextPageUrl as constructNextPageUrlService,
   constructPreviousPageUrl as constructPreviousPageUrlService,
-} from "../services/postService.js";
+} from "../services/postService.ts";
 
-const createPost = async (req, res) => {
+const createPost = async (req: Request, res: Response): Promise<Response> => {
   try {
     console.log(req.user);
     const post = await createPostService(req.user.id, req.body);
     return res.status(StatusCodes.CREATED).json(post);
   } catch (error) {
-    console.log(error.message);
+    if (error instanceof Error) {
+      console.log(error.message);
+    } else {
+      console.log("An unknown error occurred");
+    }
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 
-const getPost = async (req, res) => {
+const getPost = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
 
     const post = await getPostService(id);
 
@@ -37,36 +42,49 @@ const getPost = async (req, res) => {
     }
     return res.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
   } catch (error) {
-    console.log(error.message);
+    if (error instanceof Error) {
+      console.log(error.message);
+    } else {
+      console.log("An unknown error occurred");
+    }
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 
-const getPostComments = async (req, res) => {
+const getPostComments = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
     const comments = await getPostCommentsService(id);
     if (comments) {
       return res.status(StatusCodes.OK).json(comments);
     }
     return res.status(StatusCodes.NOT_FOUND).json({ error: "Post not found" });
   } catch (error) {
-    console.log(error.message);
+    if (error instanceof Error) {
+      console.log(error.message);
+    } else {
+      console.log("An unknown error occurred");
+    }
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 
-const getPostsByUser = async (req, res) => {
+const getPostsByUser = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   try {
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 9;
-    const search = req.query.search || "";
+    const page = parseInt(req?.query?.page as string, 10) || 1;
+    const limit = parseInt(req?.query?.limit as string, 10) || 9;
+    const search = (req?.query?.search as string) || "";
     const userId = req.user ? req.user.id : null;
-    console.log("controller userId: ", req.user);
     const {
       rows: posts,
       totalPages,
@@ -95,18 +113,22 @@ const getPostsByUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error.message);
+    if (error instanceof Error) {
+      console.log(error.message);
+    } else {
+      console.log("An unknown error occurred");
+    }
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 
-const getAllPosts = async (req, res) => {
+const getAllPosts = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 9;
-    const search = req.query.search || "";
+    const page = parseInt(req?.query?.page as string, 10) || 1;
+    const limit = parseInt(req?.query?.limit as string, 10) || 9;
+    const search = (req?.query?.search as string) || "";
 
     const {
       rows: posts,
@@ -138,17 +160,21 @@ const getAllPosts = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error.message);
+    if (error instanceof Error) {
+      console.log(error.message);
+    } else {
+      console.log("An unknown error occurred");
+    }
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 
-const deletePost = async (req, res) => {
+const deletePost = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const postId = req.params.id;
-    const userId = req.user.id;
+    const postId = parseInt(req?.params?.id);
+    const userId = parseInt(req.user?.id?.toString() || "");
 
     const post = await findPostByIdService(postId);
 
@@ -171,18 +197,22 @@ const deletePost = async (req, res) => {
       .status(StatusCodes.OK)
       .json({ message: `Post deleted successfully` });
   } catch (error) {
-    console.log(error.message);
+    if (error instanceof Error) {
+      console.log(error.message);
+    } else {
+      console.log("An unknown error occurred");
+    }
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: "Something Went Wrong Please Try Again Later" });
   }
 };
 
-const updatePost = async (req, res) => {
+const updatePost = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const postId = req.params.id;
-    const userId = req.user.id;
-    const { title, content } = req.body;
+    const postId = parseInt(req?.params?.id);
+    const userId = parseInt(req.user?.id?.toString() || "");
+    const { title, content } = req?.body;
 
     const post = await findPostByIdService(postId);
 
@@ -204,7 +234,11 @@ const updatePost = async (req, res) => {
       .status(StatusCodes.OK)
       .json({ message: `Post updated successfully` });
   } catch (error) {
-    console.log(error.message);
+    if (error instanceof Error) {
+      console.log(error.message);
+    } else {
+      console.log("An unknown error occurred");
+    }
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: "Something Went Wrong Please Try Again Later" });

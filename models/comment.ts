@@ -1,6 +1,7 @@
-import sequelize from "../sequelize/config.js";
+// @ts-ignore
+import sequelize from "../sequelize/config.ts";
 import { DataTypes } from "sequelize";
-
+// @ts-ignore
 const Comment = sequelize.define("Comments", {
   id: {
     type: DataTypes.INTEGER,
@@ -37,6 +38,7 @@ const Comment = sequelize.define("Comments", {
   },
 });
 
+// @ts-ignore
 Comment.associate = (models) => {
   Comment.belongsTo(models.User, {
     foreignKey: "UserId",

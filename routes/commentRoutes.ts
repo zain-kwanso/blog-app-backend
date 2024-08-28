@@ -3,14 +3,14 @@ import {
   createComment,
   deleteComment,
   updateComment,
-} from "../controllers/commentController.js";
-import { authenticateToken } from "../middleware/auth.js";
+} from "../controllers/commentController.ts";
+import { authenticateToken } from "../middleware/auth.ts";
 import {
   commentUpdateRules,
   commentCreationRules,
   commentDeleteRules,
-} from "../middleware/commentValidators.js";
-import { validate } from "../middleware/validationCheck.js";
+} from "../middleware/commentValidators.ts";
+import { validate } from "../middleware/validationCheck.ts";
 
 const router = express.Router();
 

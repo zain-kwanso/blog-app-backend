@@ -1,8 +1,8 @@
 import express from "express";
-import postRoutes from "./postRoutes.js";
-import commentRoutes from "./commentRoutes.js";
-import authRoutes from "./authRoutes.js";
-import userRoutes from "./userRoutes.js";
+import postRoutes from "./postRoutes.ts";
+import commentRoutes from "./commentRoutes.ts";
+import authRoutes from "./authRoutes.ts";
+import userRoutes from "./userRoutes.ts";
 
 const router = express.Router();
 

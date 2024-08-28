@@ -7,14 +7,14 @@ import {
   deletePost,
   getPostComments,
   updatePost,
-} from "../controllers/postController.js";
-import { authenticateToken } from "../middleware/auth.js";
+} from "../controllers/postController.ts";
+import { authenticateToken } from "../middleware/auth.ts";
 import {
   postCreationRules,
   postDeleteRules,
   postUpdateRules,
-} from "../middleware/postValidators.js";
-import { validate } from "../middleware/validationCheck.js";
+} from "../middleware/postValidators.ts";
+import { validate } from "../middleware/validationCheck.ts";
 
 const router = express.Router();
 

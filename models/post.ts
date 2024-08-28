@@ -1,6 +1,7 @@
-import sequelize from "../sequelize/config.js";
+// @ts-ignore
+import sequelize from "../sequelize/config.ts";
 import { DataTypes } from "sequelize";
-
+// @ts-ignore
 const Post = sequelize.define("Posts", {
   id: {
     type: DataTypes.INTEGER,
@@ -25,6 +26,7 @@ const Post = sequelize.define("Posts", {
   },
 });
 
+// @ts-ignore
 Post.associate = (models) => {
   Post.belongsTo(models.User, {
     foreignKey: "UserId",

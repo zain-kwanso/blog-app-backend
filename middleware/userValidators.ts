@@ -1,5 +1,4 @@
-import { body, param, validationResult } from "express-validator";
-import { statusCodes } from "../constants/statusCodes.js";
+import { body, param } from "express-validator";
 const userValidationRules = [
   body("name").notEmpty().withMessage("Name is required"),
   body("email").isEmail().withMessage("Enter a valid email address"),
