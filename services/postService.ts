@@ -3,10 +3,12 @@
 import { Sequelize, Op } from "sequelize";
 import { Request } from "express";
 import db from "../models/index.ts"; // Adjust the import path as necessary
-const { User, Post, Comment } = db; // Assuming named exports from models
+import { PostCreationAttributes, PostInstance } from "../@types/models/post";
+import { CommentInstance } from "../@types/models/comment";
+const { User, Post, Comment } = db;
 
 // Helper function to find the post by ID
-const findPostById = async (postId: number): Promise<typeof Post | null> => {
+const findPostById = async (postId: number): Promise<PostInstance | null> => {
   return await Post.findOne({
     where: {
       id: postId,
@@ -15,7 +17,7 @@ const findPostById = async (postId: number): Promise<typeof Post | null> => {
 };
 
 // Helper function to check if the user is authorized to delete the post
-const isUserAuthorized = (post: typeof Post, userId: number): boolean =>
+const isUserAuthorized = (post: PostInstance, userId: number): boolean =>
   post?.UserId === userId;
 
 // Helper function to delete comments associated with the post
@@ -99,13 +101,13 @@ const fetchPostsWithPaginationAndSearch = async (
 // Create a new post
 const createPost = async (
   userId: number,
-  postData: Partial<typeof Post>
-): Promise<typeof Post> => {
+  postData: PostCreationAttributes
+): Promise<PostInstance> => {
   return await Post.create({ UserId: userId, ...postData });
 };
 
 // Get a post's comments by ID
-const getPostComments = async (postId: number): Promise<typeof Comment> => {
+const getPostComments = async (postId: number): Promise<CommentInstance[]> => {
   return await Comment.findAll({
     where: {
       PostId: postId,
@@ -132,20 +134,20 @@ const getPostComments = async (postId: number): Promise<typeof Comment> => {
 };
 
 // Get a post by ID
-const getPost = async (postId: number): Promise<typeof Post> => {
+const getPost = async (postId: number): Promise<PostInstance | null> => {
   return await Post.findByPk(postId);
 };
 
 // Update a post
 const updatePost = async (
-  post: typeof Post,
-  updatedData: Partial<typeof Post>
+  post: PostInstance,
+  updatedData: PostCreationAttributes
 ) => {
   return await post.update(updatedData);
 };
 
 // Delete a post
-const deletePost = async (post: typeof Post) => {
+const deletePost = async (post: PostInstance) => {
   await post.destroy();
 };
 

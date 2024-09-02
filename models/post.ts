@@ -1,8 +1,8 @@
-// @ts-ignore
+import { PostInstance } from "../@types/models/post";
 import sequelize from "../sequelize/config.ts";
 import { DataTypes } from "sequelize";
-// @ts-ignore
-const Post = sequelize.define("Posts", {
+
+const Post: PostInstance = sequelize.define<PostInstance>("Posts", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,

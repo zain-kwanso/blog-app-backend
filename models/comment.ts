@@ -1,8 +1,9 @@
-// @ts-ignore
 import sequelize from "../sequelize/config.ts";
 import { DataTypes } from "sequelize";
-// @ts-ignore
-const Comment = sequelize.define("Comments", {
+import { data } from "../@types/sequelize";
+import { CommentInstance } from "../@types/models/comment";
+
+const Comment: CommentInstance = sequelize.define<CommentInstance>("Comments", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,

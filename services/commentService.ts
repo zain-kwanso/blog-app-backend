@@ -1,8 +1,10 @@
+import { CommentInstance } from "../@types/models/comment";
+
 import Comment from "../models/comment.ts";
 import User from "../models/user.ts";
 
 // Helper function to find the comment by ID
-const findComment = async (commentId: number): Promise<typeof Comment | null> =>
+const findComment = async (commentId: number) =>
   await Comment.findOne({
     where: {
       id: commentId,
@@ -28,7 +30,7 @@ const createComment = async (
   PostId: number,
   content: string,
   ParentId?: number
-): Promise<typeof Comment | null> => {
+) => {
   console.log(userId);
   if (!ParentId)
     return await Comment.create({
@@ -49,7 +51,7 @@ const createComment = async (
 };
 
 // Get a comment by ID
-const getComment = async (postId: number): Promise<typeof Comment> => {
+const getComment = async (postId: number): Promise<CommentInstance[]> => {
   return await Comment.findAll({
     where: {
       PostId: postId,
@@ -76,7 +78,7 @@ const getComment = async (postId: number): Promise<typeof Comment> => {
 };
 
 // Update a comment
-const updateComment = async (comment: typeof Comment, content: string) => {
+const updateComment = async (comment: CommentInstance, content: string) => {
   comment.content = content;
   return await comment.save();
 };

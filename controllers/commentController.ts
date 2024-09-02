@@ -67,7 +67,7 @@ const deleteComment = async (
 ): Promise<Response> => {
   try {
     const commentId = parseInt(req?.params?.id);
-    const userId = parseInt(req.user?.id?.toString() || "");
+    const userId = parseInt(req.user?.id?.toString());
 
     const comment = await findCommentService(commentId);
 
@@ -106,7 +106,7 @@ const updateComment = async (
 ): Promise<Response> => {
   try {
     const commentId = parseInt(req.params?.id);
-    const userId = parseInt(req.user?.id?.toString() || "");
+    const userId = parseInt(req.user?.id?.toString());
     const { content } = req.body;
 
     const comment = await findCommentService(commentId);

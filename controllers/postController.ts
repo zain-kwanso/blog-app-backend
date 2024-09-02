@@ -142,7 +142,7 @@ const getAllPosts = async (req: Request, res: Response): Promise<Response> => {
         .status(StatusCodes.NOT_FOUND)
         .json({ error: "No posts found" });
     }
-    // console.log(req.protocol);
+
     const nextPageUrl = constructNextPageUrlService(req, nextPage, limit);
     const previousPageUrl = constructPreviousPageUrlService(
       req,
@@ -174,7 +174,7 @@ const getAllPosts = async (req: Request, res: Response): Promise<Response> => {
 const deletePost = async (req: Request, res: Response): Promise<Response> => {
   try {
     const postId = parseInt(req?.params?.id);
-    const userId = parseInt(req.user?.id?.toString() || "");
+    const userId = parseInt(req.user?.id?.toString());
 
     const post = await findPostByIdService(postId);
 
@@ -211,7 +211,7 @@ const deletePost = async (req: Request, res: Response): Promise<Response> => {
 const updatePost = async (req: Request, res: Response): Promise<Response> => {
   try {
     const postId = parseInt(req?.params?.id);
-    const userId = parseInt(req.user?.id?.toString() || "");
+    const userId = parseInt(req.user?.id?.toString());
     const { title, content } = req?.body;
 
     const post = await findPostByIdService(postId);

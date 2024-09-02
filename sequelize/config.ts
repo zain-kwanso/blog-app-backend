@@ -8,8 +8,8 @@ const env = process.env.NODE_ENV || "development";
 const config = configFile[env];
 dotenv.config();
 
-let sequelize;
-if (env == "production") {
+let sequelize: Sequelize;
+if (env === "production") {
   sequelize = new Sequelize(process.env.POSTGRES_URL as string, {
     dialect: config.dialect,
     dialectModule: pg,

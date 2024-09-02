@@ -1,9 +1,7 @@
-import { Request } from "express";
-
 export interface User {
   id: number;
   name: string;
-  iat: number; // Issued at time (Unix timestamp)
+  iat: number;
 }
 
 declare global {
