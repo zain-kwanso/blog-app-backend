@@ -16,15 +16,16 @@ const config = configFile[env];
 
 dotenv.config();
 const dialect = config.dialect as Dialect;
+
 let sequelize: Sequelize;
 if (env === "production") {
-  sequelize = new Sequelize(process.env.POSTGRES_URL as string, {
+  sequelize = new Sequelize(config.database!, {
     dialect: dialect,
     dialectModule: pg,
   });
 } else {
   sequelize = new Sequelize(
-    config.database,
+    config.database!,
     config.username,
     config.password!,
     {

@@ -1,4 +1,5 @@
-export default {
+//type declaration
+const config = {
   development: {
     username: "postgres",
     password: "123",
@@ -16,8 +17,10 @@ export default {
   production: {
     username: "postgres",
     password: "123",
-    database: "practice",
+    database: process.env.POSTGRES_URL,
     host: "127.0.0.1",
     dialect: "postgres",
   },
 };
+
+export default config;

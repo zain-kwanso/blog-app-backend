@@ -1,4 +1,4 @@
-export interface User {
+export interface Payload {
   id: number;
   name: string;
   iat: number;
@@ -7,7 +7,7 @@ export interface User {
 declare global {
   namespace Express {
     interface Request {
-      user: User;
+      user: Payload;
     }
   }
 }

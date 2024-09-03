@@ -47,3 +47,5 @@ const getUser = async (req: Request, res: Response): Promise<Response> => {
 };
 
 export { getUserNameById, getUser };
+
+//validation types

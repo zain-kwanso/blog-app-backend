@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
-import { User } from "../@types/module";
+import { Payload } from "../@types/module";
 
 dotenv.config();
 
@@ -25,7 +25,7 @@ export const authenticateToken = (
     if (err)
       return res.status(StatusCodes.FORBIDDEN).json({ error: "Invalid token" });
 
-    req.user = user as User;
+    req.user = user as Payload;
     next();
   });
 };

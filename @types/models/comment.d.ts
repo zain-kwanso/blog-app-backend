@@ -5,7 +5,7 @@ export interface CommentAttributes {
   content: string;
   UserId: number;
   PostId: number;
-  ParentId?: number | null;
+  ParentId?: number;
 }
 
 export interface CommentCreationAttributes
