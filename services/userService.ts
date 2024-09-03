@@ -2,6 +2,7 @@
 import User from "../models/user.ts";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { UserCreationAttributes } from "../@types/models/user";
 
 const SECRET_KEY = process.env.JWT_SECRET || "VerySecret";
 // Signin service
@@ -30,7 +31,7 @@ const signin = async (
 
 // Signup service
 const signup = async (
-  userData: Partial<typeof User>
+  userData: UserCreationAttributes
 ): Promise<string | null> => {
   const { email, password, name } = userData;
 

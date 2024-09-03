@@ -1,6 +1,6 @@
 import sequelize from "../sequelize/config.ts";
 import { DataTypes } from "sequelize";
-import { data } from "../@types/sequelize";
+import { data, IDb } from "../@types/sequelize";
 import { CommentInstance } from "../@types/models/comment";
 
 const Comment: CommentInstance = sequelize.define<CommentInstance>("Comments", {
@@ -39,8 +39,7 @@ const Comment: CommentInstance = sequelize.define<CommentInstance>("Comments", {
   },
 });
 
-// @ts-ignore
-Comment.associate = (models) => {
+Comment.associate = (models: IDb) => {
   Comment.belongsTo(models.User, {
     foreignKey: "UserId",
     onDelete: "CASCADE",

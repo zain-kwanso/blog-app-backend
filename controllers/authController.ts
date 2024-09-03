@@ -4,11 +4,12 @@ import {
   signin as signinService,
   signup as signupService,
 } from "../services/userService.ts";
+import { UserLoginAttributes } from "../@types/models/user";
 
 // Define the request and response types
 const signin = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { email, password } = req?.body;
+    const { email, password }: UserLoginAttributes = req?.body;
     const token = await signinService(email, password);
     if (!token) {
       return res
