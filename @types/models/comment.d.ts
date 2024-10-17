@@ -1,6 +1,6 @@
 import { Optional } from "sequelize";
 
-export interface CommentAttributes {
+export interface Comment {
   id: number;
   content: string;
   UserId: number;
@@ -9,9 +9,20 @@ export interface CommentAttributes {
 }
 
 export interface CommentCreationAttributes
-  extends Optional<CommentAttributes, "id" | "ParentId"> {}
+  extends Optional<CommentAttributes, "id" | "UserId"> {}
 
-export type CommentInstance = data<
-  CommentAttributes,
-  CommentCreationAttributes
->;
+export type CommentInstance = data<Comment, CommentCreationAttributes>;
+
+export interface ResComment {
+  id: number;
+  UserId: number;
+  content: string;
+  PostId: number;
+  ParentId?: number | null;
+  createdAt: string;
+  updatedAt: string;
+  User: UserForComment;
+  replies?: ResComment[];
+}
+
+export type CommentResponse = ResComment[];

@@ -1,6 +1,6 @@
 import { Optional } from "sequelize";
 
-export interface PostAttributes {
+export interface Post {
   id: number;
   title: string;
   content: string;
@@ -10,52 +10,30 @@ export interface PostAttributes {
 export interface PostCreationAttributes
   extends Optional<PostAttributes, "id" | "UserId"> {}
 
-export type PostInstance = data<PostAttributes, PostCreationAttributes>;
+export type PostInstance = data<Post, PostCreationAttributes>;
 
-import { Model, DataTypes } from "sequelize";
-import sequelize from "../lib/sequelize";
-import Partner from "./partner";
-import { Op } from "sequelize";
-import Family from "./family";
-import Sibling from "./sibling";
-
-class Lead extends Model {
-  public id!: number;
-  public PartnerId!: number;
-  public UserId: number;
-  public LeadId: number;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
-  Partner?: {
-    source: string;
-  };
-  static associate;
+export interface PostResponse {
+  id: number;
+  UserId: number;
+  title: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  authorName?: string;
 }
 
-Lead.init(
-  {
-    PartnerId: {
-      type: DataTypes.INTEGER,
-      validate: {
-        notEmpty: {
-          msg: "PartnerId is required.",
-        },
-      },
-    },
-    UserId: {
-      type: DataTypes.INTEGER,
-    },
-    LeadId: {
-      type: DataTypes.INTEGER,
-    },
-  },
-  {
-    sequelize,
-  }
-);
+export interface Pagination {
+  currentPage: number;
+  totalPages: number;
+  nextPageUrl: string | null;
+  previousPageUrl: string | null;
+}
 
-Lead.belongsTo(Partner, { foreignKey: "PartnerId", as: "Partner" });
-Partner.hasMany(Lead, { foreignKey: "PartnerId" });
+export interface AllPostResponse {
+  posts: Post[];
+  pagination: Pagination;
+}
 
-export default Lead;
+export type DeleteEditResponse = {
+  message: string;
+};

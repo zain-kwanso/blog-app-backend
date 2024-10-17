@@ -4,7 +4,7 @@ import {
   signin as signinService,
   signup as signupService,
 } from "../services/userService.ts";
-import { UserLoginAttributes } from "../@types/models/user";
+import { UserLoginAttributes } from "../@types/models/user.ts";
 
 // Define the request and response types
 const signin = async (req: Request, res: Response): Promise<Response> => {

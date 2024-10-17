@@ -1,5 +1,5 @@
-import { body, param } from "express-validator";
-const postCreationRules = [
+import { body, param, ValidationChain } from "express-validator";
+const postCreationRules: ValidationChain[] = [
   body("title")
     .notEmpty()
     .withMessage("Title is required")
@@ -8,11 +8,11 @@ const postCreationRules = [
   body("content").notEmpty().withMessage("Content is required"),
 ];
 
-const postDeleteRules = [
+const postDeleteRules: ValidationChain[] = [
   param("id").isInt().withMessage("Valid id is required"),
 ];
 
-const postUpdateRules = [
+const postUpdateRules: ValidationChain[] = [
   param("id").isInt().withMessage("Valid id is required to update the post"),
   body("title")
     .notEmpty()

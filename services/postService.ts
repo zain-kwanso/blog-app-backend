@@ -2,10 +2,11 @@
 
 import { Sequelize, Op } from "sequelize";
 import { Request } from "express";
-import db from "../models/index.ts"; // Adjust the import path as necessary
+import User from "../models/user.ts";
+import Post from "../models/post.ts";
+import Comment from "../models/comment.ts";
 import { PostCreationAttributes, PostInstance } from "../@types/models/post";
-import { CommentInstance } from "../@types/models/comment";
-const { User, Post, Comment } = db;
+import { CommentInstance } from "../@types/models/comment.ts";
 
 // Helper function to find the post by ID
 const findPostById = async (postId: number): Promise<PostInstance | null> => {
@@ -20,7 +21,6 @@ const findPostById = async (postId: number): Promise<PostInstance | null> => {
 const isUserAuthorized = (post: PostInstance, userId: number): boolean =>
   post?.UserId === userId;
 
-// Helper function to delete comments associated with the post
 const deleteCommentsByPostId = async (
   postId: number
 ): Promise<number | null> => {
@@ -31,7 +31,6 @@ const deleteCommentsByPostId = async (
   });
 };
 
-// Helper function to construct next page URL
 const constructNextPageUrl = (
   req: Request,
   nextPage: number | null,
@@ -43,7 +42,6 @@ const constructNextPageUrl = (
       }?page=${nextPage}&limit=${limit}&search=${req.query.search || ""}`
     : null;
 
-// Helper function to construct previous page URL
 const constructPreviousPageUrl = (
   req: Request,
   previousPage: number | null,
@@ -55,7 +53,6 @@ const constructPreviousPageUrl = (
       }?page=${previousPage}&limit=${limit}&search=${req.query.search || ""}`
     : null;
 
-// Helper function to fetch posts with pagination and search
 const fetchPostsWithPaginationAndSearch = async (
   page: number = 1,
   limit: number = 10,
@@ -150,6 +147,39 @@ const updatePost = async (
 const deletePost = async (post: PostInstance) => {
   await post.destroy();
 };
+
+// send notification service with redis client
+// const sendNotifications = async (bloggerId: number) => {
+//   try {
+//     const followers = await getFollowers(bloggerId);
+
+//     followers.forEach(async (follower) => {
+//       const taskId = `sendEmailTo_${follower.id}`;
+
+//       try {
+//         await redisClient.set(taskId, JSON.stringify(follower));
+
+//         setTimeout(async () => {
+//           setTimeout(() => {
+//             console.log(
+//               `\n\n ************************Sending email to follower ${follower.id}*********************************`
+//             );
+//           }, 5000);
+
+//           const followerData = await redisClient.get(taskId);
+//           if (followerData) {
+//             console.log(`Email sent to: ${followerData}`);
+//             await redisClient.del(taskId);
+//           }
+//         }, 10000);
+//       } catch (err) {
+//         console.error("Redis Error:", err);
+//       }
+//     });
+//   } catch (err) {
+//     console.error("Error sending notifications:", err);
+//   }
+// };
 
 export {
   findPostById,

@@ -1,7 +1,10 @@
-import sequelize from "../sequelize/config.ts";
 import { DataTypes } from "sequelize";
-import { data, IDb } from "../@types/sequelize";
+
 import { CommentInstance } from "../@types/models/comment";
+import User from "./user.ts";
+import Post from "./post.ts";
+import Follower from "./follower.ts";
+import sequelize from "../sequelize/config.ts";
 
 const Comment: CommentInstance = sequelize.define<CommentInstance>("Comments", {
   id: {
@@ -39,28 +42,50 @@ const Comment: CommentInstance = sequelize.define<CommentInstance>("Comments", {
   },
 });
 
-Comment.associate = (models: IDb) => {
-  Comment.belongsTo(models.User, {
-    foreignKey: "UserId",
-    onDelete: "CASCADE",
-  });
+Comment.belongsTo(User, {
+  foreignKey: "UserId",
+  onDelete: "CASCADE",
+});
 
-  Comment.belongsTo(models.Post, {
-    foreignKey: "PostId",
-    onDelete: "CASCADE",
-  });
+Comment.belongsTo(Post, {
+  foreignKey: "PostId",
+  onDelete: "CASCADE",
+});
 
-  Comment.belongsTo(models.Comment, {
-    as: "parentComment",
-    foreignKey: "ParentId",
-    onDelete: "CASCADE",
-  });
+Comment.belongsTo(Comment, {
+  as: "parentComment",
+  foreignKey: "ParentId",
+  onDelete: "CASCADE",
+});
 
-  Comment.hasMany(models.Comment, {
-    as: "replies",
-    foreignKey: "ParentId",
-    onDelete: "CASCADE",
-  });
-};
+Comment.hasMany(Comment, {
+  as: "replies",
+  foreignKey: "ParentId",
+  onDelete: "CASCADE",
+});
+
+Post.belongsTo(User, {
+  foreignKey: "UserId",
+  onDelete: "CASCADE",
+});
+
+Post.hasMany(Comment, {
+  foreignKey: "PostId",
+  onDelete: "CASCADE",
+});
+User.hasMany(Post, {
+  foreignKey: "UserId",
+  onDelete: "CASCADE",
+});
+
+User.hasMany(Comment, {
+  foreignKey: "UserId",
+  onDelete: "CASCADE",
+});
+
+User.hasMany(Follower, {
+  foreignKey: "BloggerId",
+  onDelete: "CASCADE",
+});
 
 export default Comment;

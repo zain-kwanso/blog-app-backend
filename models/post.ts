@@ -1,7 +1,6 @@
 import { PostInstance } from "../@types/models/post";
-import { IDb } from "../@types/sequelize";
-import sequelize from "../sequelize/config.ts";
 import { DataTypes } from "sequelize";
+import sequelize from "../sequelize/config.ts";
 
 const Post: PostInstance = sequelize.define<PostInstance>("Posts", {
   id: {
@@ -26,17 +25,5 @@ const Post: PostInstance = sequelize.define<PostInstance>("Posts", {
     },
   },
 });
-
-Post.associate = (models: IDb) => {
-  Post.belongsTo(models.User, {
-    foreignKey: "UserId",
-    onDelete: "CASCADE",
-  });
-
-  Post.hasMany(models.Comment, {
-    foreignKey: "PostId",
-    onDelete: "CASCADE",
-  });
-};
 
 export default Post;

@@ -8,11 +8,13 @@ import {
   getComment as getCommentService,
   updateComment as updateCommentService,
 } from "../services/commentService.ts";
+import { DeleteEditResponse } from "../@types/models/post.ts";
+import { Comment } from "../@types/models/comment.ts";
 
 const createComment = async (
   req: Request,
   res: Response
-): Promise<Response> => {
+): Promise<Response<Comment>> => {
   try {
     const { ParentId, PostId, content } = req?.body;
     const comment = await createCommentService(
@@ -64,7 +66,7 @@ const getComment = async (req: Request, res: Response): Promise<Response> => {
 const deleteComment = async (
   req: Request,
   res: Response
-): Promise<Response> => {
+): Promise<Response<DeleteEditResponse>> => {
   try {
     const commentId = parseInt(req?.params?.id);
     const userId = parseInt(req.user?.id?.toString());

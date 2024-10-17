@@ -7,8 +7,12 @@ export interface UserLoginAttributes {
 export interface UserCreationAttributes extends UserLoginAttributes {
   name: string;
 }
-export interface UserAttributes extends UserCreationAttributes {
+
+export interface User {
+  email: string;
+  password: string;
+  name: string;
   id: number;
 }
 
-export type UserInstance = data<UserAttributes, UserCreationAttributes>;
+export type UserInstance = data<User, UserCreationAttributes>;

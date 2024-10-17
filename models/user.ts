@@ -1,8 +1,7 @@
-import sequelize from "../sequelize/config.ts";
 import { DataTypes } from "sequelize";
 import bcrypt from "bcrypt";
 import { UserInstance } from "../@types/models/user";
-import { IDb } from "../@types/sequelize";
+import sequelize from "../sequelize/config.ts";
 
 const User: UserInstance = sequelize.define<UserInstance>(
   "Users",
@@ -50,17 +49,5 @@ const User: UserInstance = sequelize.define<UserInstance>(
     },
   }
 );
-
-User.associate = function (models: IDb) {
-  User.hasMany(models.Post, {
-    foreignKey: "UserId",
-    onDelete: "CASCADE",
-  });
-
-  User.hasMany(models.Comment, {
-    foreignKey: "UserId",
-    onDelete: "CASCADE",
-  });
-};
 
 export default User;

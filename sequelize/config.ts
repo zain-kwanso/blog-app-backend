@@ -31,6 +31,7 @@ if (env === "production") {
     {
       host: config.host,
       dialect: dialect,
+      port: 5433,
     }
   );
 }

@@ -1,7 +1,11 @@
 "use strict";
+
+import sequelize from "sequelize";
+import { QueryInterface, Sequelize } from "sequelize";
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface: QueryInterface, Sequelize: any) {
     await queryInterface.createTable("Posts", {
       postID: {
         type: Sequelize.INTEGER,
@@ -37,7 +41,7 @@ module.exports = {
       },
     });
   },
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface: QueryInterface) {
     await queryInterface.dropTable("Posts");
   },
 };

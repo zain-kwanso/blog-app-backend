@@ -13,11 +13,23 @@ import {
   constructNextPageUrl as constructNextPageUrlService,
   constructPreviousPageUrl as constructPreviousPageUrlService,
 } from "../services/postService.ts";
+import {
+  AllPostResponse,
+  DeleteEditResponse,
+  PostResponse,
+} from "../@types/models/post.ts";
+import { CommentResponse } from "../@types/models/comment.ts";
+import { getProgress, sendNotifications } from "../services/emailService.ts";
 
-const createPost = async (req: Request, res: Response): Promise<Response> => {
+const createPost = async (
+  req: Request,
+  res: Response
+): Promise<Response<PostResponse>> => {
   try {
     console.log(req.user);
+
     const post = await createPostService(req.user.id, req.body);
+    sendNotifications(post.id, req.user.id);
     return res.status(StatusCodes.CREATED).json(post);
   } catch (error) {
     if (error instanceof Error) {
@@ -31,7 +43,10 @@ const createPost = async (req: Request, res: Response): Promise<Response> => {
   }
 };
 
-const getPost = async (req: Request, res: Response): Promise<Response> => {
+const getPost = async (
+  req: Request,
+  res: Response
+): Promise<Response<PostResponse>> => {
   try {
     const id = parseInt(req.params.id);
 
@@ -56,7 +71,7 @@ const getPost = async (req: Request, res: Response): Promise<Response> => {
 const getPostComments = async (
   req: Request,
   res: Response
-): Promise<Response> => {
+): Promise<Response<CommentResponse>> => {
   try {
     const id = parseInt(req.params.id);
     const comments = await getPostCommentsService(id);
@@ -79,7 +94,7 @@ const getPostComments = async (
 const getPostsByUser = async (
   req: Request,
   res: Response
-): Promise<Response> => {
+): Promise<Response<AllPostResponse>> => {
   try {
     const page = parseInt(req?.query?.page as string, 10) || 1;
     const limit = parseInt(req?.query?.limit as string, 10) || 9;
@@ -124,7 +139,10 @@ const getPostsByUser = async (
   }
 };
 
-const getAllPosts = async (req: Request, res: Response): Promise<Response> => {
+const getAllPosts = async (
+  req: Request,
+  res: Response
+): Promise<Response<AllPostResponse>> => {
   try {
     const page = parseInt(req?.query?.page as string, 10) || 1;
     const limit = parseInt(req?.query?.limit as string, 10) || 9;
@@ -171,7 +189,10 @@ const getAllPosts = async (req: Request, res: Response): Promise<Response> => {
   }
 };
 
-const deletePost = async (req: Request, res: Response): Promise<Response> => {
+const deletePost = async (
+  req: Request,
+  res: Response
+): Promise<Response<DeleteEditResponse>> => {
   try {
     const postId = parseInt(req?.params?.id);
     const userId = parseInt(req.user?.id?.toString());
@@ -208,7 +229,10 @@ const deletePost = async (req: Request, res: Response): Promise<Response> => {
   }
 };
 
-const updatePost = async (req: Request, res: Response): Promise<Response> => {
+const updatePost = async (
+  req: Request,
+  res: Response
+): Promise<Response<DeleteEditResponse>> => {
   try {
     const postId = parseInt(req?.params?.id);
     const userId = parseInt(req.user?.id?.toString());
@@ -245,6 +269,17 @@ const updatePost = async (req: Request, res: Response): Promise<Response> => {
   }
 };
 
+const getNotificationProgress = async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id);
+    const progress = await getProgress(id);
+    res.json({ progress: Math.floor(progress) });
+  } catch (error) {
+    console.error("Error fetching progress:", error);
+    res.status(500).json({ error: "Error fetching progress" });
+  }
+};
+
 export {
   createPost,
   getPost,
@@ -253,4 +288,5 @@ export {
   deletePost,
   updatePost,
   getPostComments,
+  getNotificationProgress,
 };
