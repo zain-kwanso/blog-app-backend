@@ -4,7 +4,11 @@ import { getUserNameById } from "./userService.ts";
 import Follower from "../models/follower.ts";
 
 // redis client setup
-const redisClient = redis.createClient();
+const redisClient = redis.createClient({
+  url: `redis://${process.env.REDIS_HOST || "host.docker.internal"}:${
+    process.env.REDIS_PORT || 6379
+  }`,
+});
 redisClient.on("error", (err) => {
   console.error("Redis error: ", err);
 });
@@ -20,9 +24,9 @@ const getRedisKeys = (postId: number) => {
 };
 
 // bull setup for notification queue to use with redis
-const notificationQueue = new Bull("notificationQueue", {
+const notificationQueue = new Bull("notificationQueue1", {
   redis: {
-    host: "127.0.0.1",
+    host: process.env.REDIS_HOST || "host.docker.internal",
     port: 6379,
   },
 });
@@ -89,9 +93,9 @@ notificationQueue.process(async (job) => {
 });
 
 // bull setup for failed notification queue
-const failedNotificationQueue = new Bull("failedNotificationQueue", {
+const failedNotificationQueue = new Bull("failedNotificationQueue1", {
   redis: {
-    host: "127.0.0.1",
+    host: process.env.REDIS_HOST || "host.docker.internal",
     port: 6379,
   },
 });
